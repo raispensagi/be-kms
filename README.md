@@ -1,12 +1,9 @@
-<p align="center"><img src="https://grandorder.wiki/images/thumb/8/80/RiyoDivider1.png/700px-RiyoDivider1.png"></p>
+<p align="center"><img src="https://i.pinimg.com/originals/b2/bd/c5/b2bdc561f67208e3f413f2266bbbd47b.png"></p>
 
 
 ## Back-End KMS Kelapa Sawit
 
 Berikut adalah back-end dari KMS Kelapa Sawit sebagai projek dari penelitian skripsi
-
----
-<p><img src="https://vignette.wikia.nocookie.net/typemoon/images/2/26/Gudakomanga.png/revision/latest/top-crop/width/360/height/450?cb=20190105001649" height=250px></p>
 
 ## Instalasi 
 
@@ -58,8 +55,6 @@ php artisan jwt:secret
 ```
 php artisan serve
 ```
----
-<p><img src="https://fate-go.cirnopedia.org/img/comics/commnet_chara07_rv.png" height=250px></p>
 
 ## API List (Untuk sementara ini)
 
