@@ -5,7 +5,10 @@
 
 Berikut adalah back-end dari KMS Kelapa Sawit sebagai projek dari penelitian skripsi
 
-## Instalasi
+---
+<p><img src="https://vignette.wikia.nocookie.net/typemoon/images/2/26/Gudakomanga.png/revision/latest/top-crop/width/360/height/450?cb=20190105001649" height=250px></p>
+
+## Instalasi 
 
 ### Program Esensial
 Untuk menjalankan projek ini, dibutuhkan program berikut:
@@ -55,6 +58,8 @@ php artisan jwt:secret
 ```
 php artisan serve
 ```
+---
+<p><img src="https://fate-go.cirnopedia.org/img/comics/commnet_chara07_rv.png" height=250px></p>
 
 ## API List (Untuk sementara ini)
 
