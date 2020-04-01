@@ -62,37 +62,54 @@ php artisan serve
 #### Petani
 - Login
 ```
-http://localhost:8000/api/petani/login
+POST::  http://localhost:8000/api/petani/login
+//  need
+    nomor_telefon
+    password
 ```
 - Register
 ```
-http://localhost:8000/api/petani/register
+POST::  http://localhost:8000/api/petani/register
+//  need
+    nama
+    nomor_telefon
+    password
+    jenis_kelamin
 ```
 - Logout
 ```
-http://localhost:8000/api/petani/logout
+POST::  http://localhost:8000/api/petani/logout
 ```
 - Profil
 ```
-http://localhost:8000/api/petani/profil
+GET::   http://localhost:8000/api/petani/profil
 ```
 
 #### Pakar Sawit
 - Login
 ```
-http://localhost:8000/api/pakar/login
+POST::  http://localhost:8000/api/pakar/login
+//  need
+    email
+    password
 ```
 - Register
 ```
-http://localhost:8000/api/pakar/register
+POST::  http://localhost:8000/api/pakar/register
+//  need
+    nama
+    email
+    nomor_telefon
+    password
+    jenis_kelamin
 ```
 - Logout
 ```
-http://localhost:8000/api/pakar/logout
+POST::  http://localhost:8000/api/pakar/logout
 ```
 - Profil
 ```
-http://localhost:8000/api/pakar/profil
+GET::   http://localhost:8000/api/pakar/profil
 ```
 
 ## Sekian
