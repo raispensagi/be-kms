@@ -1,4 +1,4 @@
-<p align="center"><img src="https://pngimage.net/wp-content/uploads/2018/06/kelapa-sawit-png-3.png" width="250"></p>
+<p align="center"><img src="https://grandorder.wiki/images/thumb/8/80/RiyoDivider1.png/700px-RiyoDivider1.png"></p>
 
 
 ## Back-End KMS Kelapa Sawit
