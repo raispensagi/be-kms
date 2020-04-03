@@ -1,5 +1,6 @@
 <?php
 
+use App\PakarSawit;
 use App\Petani;
 use App\User;
 
@@ -70,6 +71,36 @@ return [
             'provider' => 'pakar',
         ],
 
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admin',
+        ],
+
+        'admin_api' => [
+            'driver' => 'jwt',
+            'provider' => 'admin',
+        ],
+
+        'super' => [
+            'driver' => 'session',
+            'provider' => 'super',
+        ],
+
+        'super_api' => [
+            'driver' => 'jwt',
+            'provider' => 'super',
+        ],
+
+        'validator' => [
+            'driver' => 'session',
+            'provider' => 'validator',
+        ],
+
+        'validator_api' => [
+            'driver' => 'jwt',
+            'provider' => 'validator',
+        ],
+
 
     ],
 
@@ -106,7 +137,20 @@ return [
             'model' => App\PakarSawit::class,
         ],
 
+        'admin' => [
+            'driver' => 'eloquent',
+            'model' => App\Admin::class,
+        ],
 
+        'super' => [
+            'driver' => 'eloquent',
+            'model' => App\SuperAdmin::class,
+        ],
+
+        'validator' => [
+            'driver' => 'eloquent',
+            'model' => App\Validator::class,
+        ],
 
         // 'users' => [
         //     'driver' => 'database',

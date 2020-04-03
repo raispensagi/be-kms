@@ -64,6 +64,9 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'petani.check' => \App\Http\Middleware\PetaniCheck::class,
         'pakar.check' => \App\Http\Middleware\PakarCheck::class,
+        'admin.check' => \App\Http\Middleware\AdminCheck::class,
+        'super.check' => \App\Http\Middleware\SuperCheck::class,
+        'validator.check' => \App\Http\Middleware\ValidCheck::class,
         'cors' => \App\Http\Middleware\CORS::class,
     ];
 }
