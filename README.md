@@ -79,7 +79,6 @@ php artisan serve
 
 ## API List (Untuk sementara ini)
 
-### Otentikasi
 #### Petani
 ```
 POST::  http://localhost:8000/api/petani/login
