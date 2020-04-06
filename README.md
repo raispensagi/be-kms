@@ -17,7 +17,7 @@ Untuk menjalankan projek ini, dibutuhkan program berikut:
 
 ### Menjalankan Web
 
-- Clone repository ini dan simpan pada sebuah folder (disarankan dalam folder xampp/htdocs/[nama folder]).
+- Clone repository ini dan simpan pada sebuah folder (disarankan dalam folder ```xampp/htdocs/[nama folder]```).
 - Buka folder tersebut dan dalam folder tersebut klik kanan dan pilih **Git Bash Here**.
 - Dalam terminal GitBash, update composer untuk mengikuti bawaan projek ini:
 ```
