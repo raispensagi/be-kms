@@ -11,7 +11,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class SuperAdmin extends Authenticatable implements JWTSubject
 {
     // nama tabel
-    protected $table = 'validator';
+    protected $table = 'super_admin';
 
     // yang dapat diisi
     protected $fillable = [

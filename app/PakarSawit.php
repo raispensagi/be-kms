@@ -20,6 +20,10 @@ class PakarSawit extends Authenticatable implements JWTSubject
         'password'
     ];
 
+    public function artikel(){
+        return $this->hasMany('App\Artikel');
+    }
+
     public function getJWTIdentifier()
     {
         // TODO: Implement getJWTIdentifier() method.

@@ -29,6 +29,12 @@ Route::group(['middleware' => ['cors']], function () {
         Route::group(['middleware' => ['pakar.check']], function () {
             Route::post('logout', 'API\Auth\AuthPakarController@logout');
             Route::get('profil', 'API\PakarController@profil');
+
+            Route::post('artikel/draft', 'API\ArtikelController@draft');
+            Route::post('artikel/post', 'API\ArtikelController@post');
+            Route::put('artikel/draft_to_post/{id}', 'API\ArtikelController@draft_to_post');
+            Route::put('artikel/edit/{id}', 'API\ArtikelController@edit');
+            Route::get('artikel/show', 'API\ArtikelController@show_pakar');
         });
     });
 
@@ -40,6 +46,8 @@ Route::group(['middleware' => ['cors']], function () {
         Route::group(['middleware' => ['petani.check']], function () {
             Route::post('logout', 'API\Auth\AuthPetaniController@logout');
             Route::get('profil', 'API\PetaniController@profil');
+
+            Route::get('artikel/show', 'API\ArtikelController@show_petani');
         });
     });
 

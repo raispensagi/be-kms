@@ -13,8 +13,25 @@ class CreateAdminSuperValidTable extends Migration
      */
     public function up()
     {
-        Schema::create('admin_super_valid', function (Blueprint $table) {
-            $table->id();
+        Schema::create('admin', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('nama')->nullable();
+            $table->string('email')->unique()->nullable();
+            $table->string('password');
+            $table->timestamps();
+        });
+        Schema::create('super_admin', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('nama')->nullable();
+            $table->string('email')->unique()->nullable();
+            $table->string('password');
+            $table->timestamps();
+        });
+        Schema::create('validator', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('nama')->nullable();
+            $table->string('email')->unique()->nullable();
+            $table->string('password');
             $table->timestamps();
         });
     }
