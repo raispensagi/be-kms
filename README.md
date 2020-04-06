@@ -1,4 +1,4 @@
-<p align="center"><img src="https://i.pinimg.com/originals/b2/bd/c5/b2bdc561f67208e3f413f2266bbbd47b.png" height=250px></p>
+<p align="center"><img src="https://media.tenor.com/images/b5a827dab33d5469cbcb26652828f0d2/tenor.gif" height=250px></p>
 
 
 ## Back-End KMS Kelapa Sawit
