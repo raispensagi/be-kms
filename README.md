@@ -3,7 +3,7 @@
 
 ## Back-End KMS Kelapa Sawit
 
-Berikut adalah back-end dari KMS Kelapa Sawit sebagai projek dari penelitian skripsi
+Berikut adalah back-end dari KMS Kelapa Sawit sebagai projek dari penelitian skripsi. Untuk mengaksesnya secara online/live, dapat diakses melalui ```http://[ip_address]/kms_backend/public/[link api]```
 
 ## Instalasi 
 
@@ -112,9 +112,17 @@ POST::  http://localhost:8000/api/pakar/logout
 GET::   http://localhost:8000/api/pakar/profil
 
 POST::  http://localhost:8000/api/pakar/artikel/draft               // menyimpan draft
+//  judul
+    konten
 POST::  http://localhost:8000/api/pakar/artikel/post                // melakukan posting
+//  id (di URL)
+    judul
+    konten
 PUT::   http://localhost:8000/api/pakar/artikel/draft_to_post/{id}  // posting draft
 PUT::   http://localhost:8000/api/pakar/artikel/edit/{id}           // edit artikel
+//  id (di URL)
+    judul
+    konten
 GET::   http://localhost:8000/api/pakar/artikel/show                // show artikel milik pakar
 ```
 
