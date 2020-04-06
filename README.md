@@ -60,56 +60,41 @@ php artisan serve
 
 ### Otentikasi
 #### Petani
-- Login
 ```
 POST::  http://localhost:8000/api/petani/login
-//  need
-    nomor_telefon
+//  nomor_telefon
     password
-```
-- Register
-```
 POST::  http://localhost:8000/api/petani/register
-//  need
-    nama
+//  nama
     nomor_telefon
     password
     jenis_kelamin
-```
-- Logout
-```
 POST::  http://localhost:8000/api/petani/logout
-```
-- Profil
-```
 GET::   http://localhost:8000/api/petani/profil
+
+GET::  http://localhost:8000/api/petani/artikel/show                // show semua artikel
 ```
 
 #### Pakar Sawit
-- Login
+
 ```
 POST::  http://localhost:8000/api/pakar/login
-//  need
-    email
+//  email
     password
-```
-- Register
-```
 POST::  http://localhost:8000/api/pakar/register
-//  need
-    nama
+//  nama
     email
     nomor_telefon
     password
     jenis_kelamin
-```
-- Logout
-```
 POST::  http://localhost:8000/api/pakar/logout
-```
-- Profil
-```
 GET::   http://localhost:8000/api/pakar/profil
+
+POST::  http://localhost:8000/api/pakar/artikel/draft               // menyimpan draft
+POST::  http://localhost:8000/api/pakar/artikel/post                // melakukan posting
+PUT::   http://localhost:8000/api/pakar/artikel/draft_to_post/{id}  // posting draft
+PUT::   http://localhost:8000/api/pakar/artikel/edit/{id}           // edit artikel
+GET::   http://localhost:8000/api/pakar/artikel/show                // show artikel milik pakar
 ```
 
 ## Sekian
