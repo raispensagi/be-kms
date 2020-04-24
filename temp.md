@@ -1,3 +1,3 @@
 ```
-$ composer create-project --prefer-dist laravel/laravel belajar_laravel
+$ composer create-project --prefer-dist laravel/laravel kms_backend
 ```
