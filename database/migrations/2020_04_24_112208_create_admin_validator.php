@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePetaniPakar extends Migration
+class CreateAdminValidator extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class CreatePetaniPakar extends Migration
      */
     public function up()
     {
-        Schema::create('petani', function (Blueprint $table) {
+        Schema::create('admin', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nama')->nullable();
-            $table->string('nomor_telefon')->unique()->nullable();
+            $table->string('email')->unique()->nullable();
             $table->string('password');
-            $table->string('foto')->default('default.png');
+            $table->boolean('is_super')->default(0);
             $table->timestamps();
         });
-        Schema::create('pakar_sawit', function (Blueprint $table) {
+        Schema::create('validator', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nama')->nullable();
             $table->string('email')->unique()->nullable();
@@ -38,7 +38,7 @@ class CreatePetaniPakar extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('petani');
-        Schema::dropIfExists('pakar_sawit');
+        Schema::dropIfExists('admin');
+        Schema::dropIfExists('validator');
     }
 }

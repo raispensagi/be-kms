@@ -15,7 +15,7 @@ class Petani extends Authenticatable implements JWTSubject
 
     // yang dapat diisi
     protected $fillable = [
-        'nama', 'nomor_telefon', 'password', 'jenis_kelamin'
+        'nama', 'nomor_telefon', 'password', 'foto'
     ];
 
     protected $hidden = [
@@ -34,4 +34,7 @@ class Petani extends Authenticatable implements JWTSubject
         return [];
     }
 
+    public function bookmark(){
+        return $this->hasMany('App\Bookmark');
+    }
 }

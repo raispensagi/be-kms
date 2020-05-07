@@ -62,11 +62,12 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'petani.check' => \App\Http\Middleware\PetaniCheck::class,
-        'pakar.check' => \App\Http\Middleware\PakarCheck::class,
-        'admin.check' => \App\Http\Middleware\AdminCheck::class,
-        'super.check' => \App\Http\Middleware\SuperCheck::class,
-        'validator.check' => \App\Http\Middleware\ValidCheck::class,
+        'auth.petani' => \App\Http\Middleware\PetaniCheck::class,
+        'auth.pakar' => \App\Http\Middleware\PakarCheck::class,
+        'auth.admin' => \App\Http\Middleware\AdminCheck::class,
+        'auth.super' => \App\Http\Middleware\SuperCheck::class,
+        'auth.validator' => \App\Http\Middleware\ValidCheck::class,
+        'auth.login' => \App\Http\Middleware\LogInCheck::class,
         'cors' => \App\Http\Middleware\CORS::class,
     ];
 }

@@ -81,16 +81,6 @@ return [
             'provider' => 'admin',
         ],
 
-        'super' => [
-            'driver' => 'session',
-            'provider' => 'super',
-        ],
-
-        'super_api' => [
-            'driver' => 'jwt',
-            'provider' => 'super',
-        ],
-
         'validator' => [
             'driver' => 'session',
             'provider' => 'validator',
@@ -140,11 +130,6 @@ return [
         'admin' => [
             'driver' => 'eloquent',
             'model' => App\Admin::class,
-        ],
-
-        'super' => [
-            'driver' => 'eloquent',
-            'model' => App\SuperAdmin::class,
         ],
 
         'validator' => [

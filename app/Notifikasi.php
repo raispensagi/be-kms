@@ -4,12 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Artikel extends Model
+class Notifikasi extends Model
 {
     //
-    protected $table = 'artikel';
+    protected $table = 'notifikasi';
 
     protected $fillable = [
-        'isi', 'foto'
+        'headline', 'isi', 'penulis'
     ];
+
 }

@@ -13,16 +13,12 @@ class PakarSawit extends Authenticatable implements JWTSubject
     protected $table = 'pakar_sawit';
 
     protected $fillable = [
-      'nama', 'nomor_telefon', 'email', 'password', 'jenis_kelamin'
+      'nama', 'foto', 'email', 'password'
     ];
 
     protected $hidden = [
         'password'
     ];
-
-    public function artikel(){
-        return $this->hasMany('App\Artikel');
-    }
 
     public function getJWTIdentifier()
     {
@@ -34,6 +30,10 @@ class PakarSawit extends Authenticatable implements JWTSubject
     {
         // TODO: Implement getJWTCustomClaims() method.
         return [];
+    }
+
+    public function bookmark(){
+        return $this->hasMany('App\Bookmark');
     }
 
 }

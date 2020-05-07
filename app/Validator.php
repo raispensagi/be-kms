@@ -15,7 +15,7 @@ class Validator extends Authenticatable implements JWTSubject
 
     // yang dapat diisi
     protected $fillable = [
-        'nama', 'email', 'password'
+        'nama', 'email', 'password', 'foto'
     ];
 
     protected $hidden = [

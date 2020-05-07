@@ -17,11 +17,7 @@ class PakarController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Data Pakar Sawit',
-                'id' => $user->id,
-                'nama' => $user->nama,
-                'email' => $user->email,
-                'nomor_telefon' => $user->nomor_telefon,
-                'jenis_kelamin' => $user->jenis_kelamin,
+                'data' => $user,
                 'Status' => 200
             ], 200);
 
@@ -30,7 +26,7 @@ class PakarController extends Controller
                 'success' => false,
                 'message' => $e->getMessage(),
                 'Status' => 500
-            ], 200);
+            ], 500);
         }
     }
 }

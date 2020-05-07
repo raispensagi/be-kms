@@ -28,7 +28,7 @@ class PetaniController extends Controller
                 'success' => false,
                 'message' => $e->getMessage(),
                 'Status' => 500
-            ], 200);
+            ], 500);
         }
     }
 }

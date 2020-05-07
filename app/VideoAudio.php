@@ -4,12 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Artikel extends Model
+class VideoAudio extends Model
 {
     //
-    protected $table = 'artikel';
+    protected $table = 'video_audio';
 
     protected $fillable = [
-        'isi', 'foto'
+        'isi', 'video_audio'
     ];
 }
