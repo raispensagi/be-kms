@@ -80,51 +80,114 @@ php artisan serve
 ## API List (Untuk sementara ini)
 
 #### Petani
-```
+```diff
+! Akun
 POST::  http://localhost:8000/api/petani/login
-//  nomor_telefon
-    password
+- Request
+    + nomor_telefon
+    + password
 POST::  http://localhost:8000/api/petani/register
-//  nama
-    nomor_telefon
-    password
-    jenis_kelamin
+- Request
+    + nama
+    + nomor_telefon
+    + password
 POST::  http://localhost:8000/api/petani/logout
 GET::   http://localhost:8000/api/petani/profil
-
-GET::  http://localhost:8000/api/petani/artikel/show                // show semua artikel
+! Bookmark
+GET::   http://localhost:8000/api/petani/bookmark               (Show bookmark)
+POST::  http://localhost:8000/api/petani/bookmark/add/{id}      (Tambah bookmark, id adalah id dari konten)
+POST::  http://localhost:8000/api/petani/bookmark/delete/{id}   (Hapus bookmark, id adalah id dari konten)
 ```
 
 #### Pakar Sawit
-
-```
+```diff
+!Akun
 POST::  http://localhost:8000/api/pakar/login
-//  email
-    password
+- Request
+    + email
+    + password
 POST::  http://localhost:8000/api/pakar/register
-//  nama
-    email
-    nomor_telefon
-    password
-    jenis_kelamin
+- Request
+    + nama
+    + email
+    + password
 POST::  http://localhost:8000/api/pakar/logout
 GET::   http://localhost:8000/api/pakar/profil
-
-POST::  http://localhost:8000/api/pakar/artikel/draft               // menyimpan draft
-//  judul
-    konten
-POST::  http://localhost:8000/api/pakar/artikel/post                // melakukan posting
-//  id (di URL)
-    judul
-    konten
-PUT::   http://localhost:8000/api/pakar/artikel/draft_to_post/{id}  // posting draft
-PUT::   http://localhost:8000/api/pakar/artikel/edit/{id}           // edit artikel
-//  id (di URL)
-    judul
-    konten
-GET::   http://localhost:8000/api/pakar/artikel/show                // show artikel milik pakar
+! Bookmark
+GET::   http://localhost:8000/api/pakar/bookmark                (Show bookmark)
+POST::  http://localhost:8000/api/pakar/bookmark/add/{id}       (Tambah bookmark, id adalah id dari konten)
+POST::  http://localhost:8000/api/pakar/bookmark/delete/{id}    (Hapus bookmark, id adalah id dari konten)
+! Konten
+POST::  http://localhost:8000/api/pakar/artikel/draft           (Draft Artikel)
+- Request
+    + judul
+    + kategori
+    + sub_kategori
+    + isi
+    + foto
+POST::  http://localhost:8000/api/pakar/artikel/post            (Post Artikel)
+- Sama seperti draft
+POST::  http://localhost:8000/api/pakar/video_audio/draft       (Draft Video/Audio)
+- Request
+    + judul
+    + kategori
+    + sub_kategori
+    + isi
+    + video_audio
+POST::  http://localhost:8000/api/pakar/video_audio/post        (Post Video/Audio)
+- Sama seperti draft
+POST::  http://localhost:8000/api/pakar/edokumen/draft          (Draft E-Dokumen)
+- Request
+    + judul
+    + kategori
+    + sub_kategori
+    + penulis
+    + tahun
+    + penerbit
+    + halaman
+    + bahasa
+    + deskripsi
+    + file
+POST::  http://localhost:8000/api/pakar/edokumen/post           (Post E-Dokumen)
 ```
 
+#### Universal
+```diff
+POST::   http://localhost:8000/api/konten/pencarian                 (Search biasa)
+- Request
+    + keyword
+POST::   http://localhost:8000/api/konten/pencarian/kategori        (Search kategori)
+- Request
+    + keyword
+POST::  http://localhost:8000/api/konten/draft/edit/{id}            (Edit draft, tergantung tipe konten Artikel/Video/Edoks)
+- if Artikel
+    + judul
+    + kategori
+    + sub_kategori
+    + isi
+    + foto
+- if VideoAudio
+    + judul
+    + kategori
+    + sub_kategori
+    + isi
+    + video_audio
+- if EDokumen
+    + judul
+    + kategori
+    + sub_kategori
+    + penulis
+    + tahun
+    + penerbit
+    + halaman
+    + bahasa
+    + deskripsi
+    + file
+POST::  http://localhost:8000/api/konten/draft/post/{id}            (Post Draft, id adalah id dari konten)
+GET::   http://localhost:8000/api/konten/penulis/{id}               (Show konten dari penulis, id adalah id dari penulis)
+GET::   http://localhost:8000/api/konten/                           (Show all konten)
+GET::   http://localhost:8000/api/konten/{id}                       (Show isi konten)
+```
 ## Sekian
 
 Terima Kasih
