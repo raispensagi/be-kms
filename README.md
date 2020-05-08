@@ -91,6 +91,7 @@ POST::  http://localhost:8000/api/petani/register
 + nama
 + nomor_telefon
 + password
++ foto
 POST::  http://localhost:8000/api/petani/logout
 GET::   http://localhost:8000/api/petani/profil
 ! Bookmark
@@ -111,6 +112,7 @@ POST::  http://localhost:8000/api/pakar/register
 + nama
 + email
 + password
++ foto
 POST::  http://localhost:8000/api/pakar/logout
 GET::   http://localhost:8000/api/pakar/profil
 ! Bookmark
