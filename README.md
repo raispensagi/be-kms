@@ -84,13 +84,13 @@ php artisan serve
 ! Akun
 POST::  http://localhost:8000/api/petani/login
 - Request
-    + nomor_telefon
-    + password
++ nomor_telefon
++ password
 POST::  http://localhost:8000/api/petani/register
 - Request
-    + nama
-    + nomor_telefon
-    + password
++ nama
++ nomor_telefon
++ password
 POST::  http://localhost:8000/api/petani/logout
 GET::   http://localhost:8000/api/petani/profil
 ! Bookmark
@@ -104,13 +104,13 @@ POST::  http://localhost:8000/api/petani/bookmark/delete/{id}   (Hapus bookmark,
 !Akun
 POST::  http://localhost:8000/api/pakar/login
 - Request
-    + email
-    + password
++ email
++ password
 POST::  http://localhost:8000/api/pakar/register
 - Request
-    + nama
-    + email
-    + password
++ nama
++ email
++ password
 POST::  http://localhost:8000/api/pakar/logout
 GET::   http://localhost:8000/api/pakar/profil
 ! Bookmark
@@ -120,34 +120,34 @@ POST::  http://localhost:8000/api/pakar/bookmark/delete/{id}    (Hapus bookmark,
 ! Konten
 POST::  http://localhost:8000/api/pakar/artikel/draft           (Draft Artikel)
 - Request
-    + judul
-    + kategori
-    + sub_kategori
-    + isi
-    + foto
++ judul
++ kategori
++ sub_kategori
++ isi
++ foto
 POST::  http://localhost:8000/api/pakar/artikel/post            (Post Artikel)
 - Sama seperti draft
 POST::  http://localhost:8000/api/pakar/video_audio/draft       (Draft Video/Audio)
 - Request
-    + judul
-    + kategori
-    + sub_kategori
-    + isi
-    + video_audio
++ judul
++ kategori
++ sub_kategori
++ isi
++ video_audio
 POST::  http://localhost:8000/api/pakar/video_audio/post        (Post Video/Audio)
 - Sama seperti draft
 POST::  http://localhost:8000/api/pakar/edokumen/draft          (Draft E-Dokumen)
 - Request
-    + judul
-    + kategori
-    + sub_kategori
-    + penulis
-    + tahun
-    + penerbit
-    + halaman
-    + bahasa
-    + deskripsi
-    + file
++ judul
++ kategori
++ sub_kategori
++ penulis
++ tahun
++ penerbit
++ halaman
++ bahasa
++ deskripsi
++ file
 POST::  http://localhost:8000/api/pakar/edokumen/post           (Post E-Dokumen)
 ```
 
@@ -155,34 +155,34 @@ POST::  http://localhost:8000/api/pakar/edokumen/post           (Post E-Dokumen)
 ```diff
 POST::   http://localhost:8000/api/konten/pencarian                 (Search biasa)
 - Request
-    + keyword
++ keyword
 POST::   http://localhost:8000/api/konten/pencarian/kategori        (Search kategori)
 - Request
-    + keyword
++ keyword
 POST::  http://localhost:8000/api/konten/draft/edit/{id}            (Edit draft, tergantung tipe konten Artikel/Video/Edoks)
 - if Artikel
-    + judul
-    + kategori
-    + sub_kategori
-    + isi
-    + foto
++ judul
++ kategori
++ sub_kategori
++ isi
++ foto
 - if VideoAudio
-    + judul
-    + kategori
-    + sub_kategori
-    + isi
-    + video_audio
++ judul
++ kategori
++ sub_kategori
++ isi
++ video_audio
 - if EDokumen
-    + judul
-    + kategori
-    + sub_kategori
-    + penulis
-    + tahun
-    + penerbit
-    + halaman
-    + bahasa
-    + deskripsi
-    + file
++ judul
++ kategori
++ sub_kategori
++ penulis
++ tahun
++ penerbit
++ halaman
++ bahasa
++ deskripsi
++ file
 POST::  http://localhost:8000/api/konten/draft/post/{id}            (Post Draft, id adalah id dari konten)
 GET::   http://localhost:8000/api/konten/penulis/{id}               (Show konten dari penulis, id adalah id dari penulis)
 GET::   http://localhost:8000/api/konten/                           (Show all konten)
