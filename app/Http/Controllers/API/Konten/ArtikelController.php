@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API\Konten;
 use App\Artikel;
 use App\Http\Controllers\Controller;
 use App\Konten;
-use App\Penulis;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,20 +31,6 @@ class ArtikelController extends Controller
         return $file_name;
     }
 
-    private function check_user()
-    {
-        if (Auth::guard('pakar_api')->check()) {
-            $user = Auth::guard('pakar_api')->user();
-            $peran = 'Pakar';
-        } elseif (Auth::guard('validator_api')->check()) {
-            $user = Auth::guard('validator_api')->user();
-            $peran = 'Validator';
-        }
-        $data = [$user, $peran];
-
-        return $data;
-    }
-
     /** Public Function */
     public function draft(Request $request)
     {
@@ -58,48 +43,47 @@ class ArtikelController extends Controller
                 ], 500);
             } else {
                 // checking user privilage
-                $user = $this->check_user();
-//                dd($user[0]->nama);
-                if (Penulis::where('nama', '=', $user[0]->nama)->exists()) {
-                    $penulis = Penulis::where('nama', '=', $user[0]->nama)->first();
-                } else {
-                    $penulis = Penulis::create([
-                        'nama' => $user[0]->nama,
-                        'peran' => $user[1],
+                $user = Auth::guard('api')->user();
+
+                if ($user->peran == 'pakar_sawit' or $user->peran == 'validator') {
+                    $artikel = Artikel::create([
+                        'isi' => $request->isi,
+                        'foto' => 'default.png',
                     ]);
+
+                    $foto = $this->upload_foto($request, 'foto', 'Artikel', $artikel->id);
+                    if ($foto != NULL) {
+                        $artikel->foto = $foto;
+                        $artikel->save();
+                    }
+
+                    $konten = Konten::create([
+                        'judul' => $request->judul,
+                        'tanggal' => Carbon::now()->format('d F Y H:i:s'),
+                        'kategori' => $request->kategori,
+                        'sub_kategori' => $request->sub_kategori,
+                        'tipe' => 'Artikel',
+                        'id_tipe' => $artikel->id,
+                        'is_draft' => 1,
+                        'user_id' => $user->id,
+                    ]);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Artikel tersimpan',
+                        'judul' => $request->judul,
+                        'kategori' => $request->kategori,
+                        'sub_kategori' => $request->sub_kategori,
+                        'Status' => 201
+                    ], 201);
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Anda tidak bisa membuat konten',
+                        'Status' => 500
+                    ], 500);
                 }
-
-                $artikel = Artikel::create([
-                    'isi' => $request->isi,
-                    'foto' => 'default.png',
-                ]);
-
-                $foto = $this->upload_foto($request, 'foto', 'Artikel', $artikel->id);
-                if ($foto != NULL) {
-                    $artikel->foto = $foto;
-                    $artikel->save();
-                }
-
-                $konten = Konten::create([
-                    'judul' => $request->judul,
-                    'tanggal' => Carbon::now()->format('d F Y H:i:s'),
-                    'kategori' => $request->kategori,
-                    'sub_kategori' => $request->sub_kategori,
-                    'tipe' => 'Artikel',
-                    'id_tipe' => $artikel->id,
-                    'is_draft' => 1,
-                    'id_penulis' => $penulis->id,
-                ]);
-
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Artikel tersimpan',
-                    'judul' => $request->judul,
-                    'kategori' => $request->kategori,
-                    'sub_kategori' => $request->sub_kategori,
-                    'Status' => 201
-                ], 201);
-            };
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -120,48 +104,47 @@ class ArtikelController extends Controller
                 ], 500);
             } else {
                 // checking user privilage
-                $user = $this->check_user();
-//                dd($user[0]->nama);
-                if (Penulis::where('nama', '=', $user[0]->nama)->exists()) {
-                    $penulis = Penulis::where('nama', '=', $user[0]->nama)->first();
-                } else {
-                    $penulis = Penulis::create([
-                        'nama' => $user[0]->nama,
-                        'peran' => $user[1],
+                $user = Auth::guard('api')->user();
+
+                if ($user->peran == 'pakar_sawit' or $user->peran == 'validator') {
+                    $artikel = Artikel::create([
+                        'isi' => $request->isi,
+                        'foto' => 'default.png',
                     ]);
+
+                    $foto = $this->upload_foto($request, 'foto', 'Artikel', $artikel->id);
+                    if ($foto != NULL) {
+                        $artikel->foto = $foto;
+                        $artikel->save();
+                    }
+
+                    $konten = Konten::create([
+                        'judul' => $request->judul,
+                        'tanggal' => Carbon::now()->format('d F Y H:i:s'),
+                        'kategori' => $request->kategori,
+                        'sub_kategori' => $request->sub_kategori,
+                        'tipe' => 'Artikel',
+                        'id_tipe' => $artikel->id,
+                        'is_draft' => 0,
+                        'user_id' => $user->id,
+                    ]);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Artikel tersimpan',
+                        'judul' => $request->judul,
+                        'kategori' => $request->kategori,
+                        'sub_kategori' => $request->sub_kategori,
+                        'Status' => 201
+                    ], 201);
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Anda tidak bisa membuat konten',
+                        'Status' => 500
+                    ], 500);
                 }
-
-                $artikel = Artikel::create([
-                    'isi' => $request->isi,
-                    'foto' => 'default.png',
-                ]);
-
-                $foto = $this->upload_foto($request, 'foto', 'Artikel', $artikel->id);
-                if ($foto != NULL) {
-                    $artikel->foto = $foto;
-                    $artikel->save();
-                }
-
-                $konten = Konten::create([
-                    'judul' => $request->judul,
-                    'tanggal' => Carbon::now()->format('d F Y H:i:s'),
-                    'kategori' => $request->kategori,
-                    'sub_kategori' => $request->sub_kategori,
-                    'tipe' => 'Artikel',
-                    'id_tipe' => $artikel->id,
-                    'is_draft' => 0,
-                    'id_penulis' => $penulis->id,
-                ]);
-
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Artikel terunggah, menunggu Validasi',
-                    'judul' => $request->judul,
-                    'kategori' => $request->kategori,
-                    'sub_kategori' => $request->sub_kategori,
-                    'Status' => 201
-                ], 201);
-            };
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

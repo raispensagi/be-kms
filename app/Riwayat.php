@@ -10,21 +10,16 @@ class Riwayat extends Model
     protected $table = 'riwayat';
 
     protected $fillable = [
-        'id_petani', 'id_pakar_sawit', 'id_konten'
+        'user_id', 'konten_id'
     ];
 
     protected $hidden = [
-        'id_petani', 'id_pakar_sawit'
+        'user_id'
     ];
 
-    public function petani()
+    public function user()
     {
-        return $this->belongsTo('App\Petani');
-    }
-
-    public function pakar()
-    {
-        return $this->belongsTo('App\PakarSawit');
+        return $this->belongsTo('App\User');
     }
 
     public function konten()

@@ -16,7 +16,8 @@ class ValidCheck
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::guard('validator_api')->check()) {
+        $user = Auth::guard()->user();
+        if ($user->peran == 'validator') {
             return $next($request);
         } else {
             return response()->json([

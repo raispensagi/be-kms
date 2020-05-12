@@ -8,8 +8,8 @@ use App\EDokumen;
 use App\Http\Controllers\Controller;
 use App\Konten;
 use App\Notifikasi;
-use App\Penulis;
 use App\Riwayat;
+use App\User;
 use App\VideoAudio;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -56,20 +56,6 @@ class MainController extends Controller
         return $file_name;
     }
 
-    private function check_user()
-    {
-        if (Auth::guard('pakar_api')->check()) {
-            $user = Auth::guard('pakar_api')->user();
-            $peran = 'Pakar';
-        } elseif (Auth::guard('validator_api')->check()) {
-            $user = Auth::guard('validator_api')->user();
-            $peran = 'Validator';
-        }
-        $data = [$user, $peran];
-
-        return $data;
-    }
-
     private function get_isi($tipe, $id)
     {
         if ($tipe == "Artikel") {
@@ -100,11 +86,14 @@ class MainController extends Controller
         return $var;
     }
 
-    private function get_penulis($id)
+    private function get_user($id)
     {
-        $var = Penulis::where('id', $id)->first();
-        $var->makeHidden(['id', 'created_at', 'updated_at']);
-        return $var;
+        $var = User::where('id', $id)->first();
+        $user = array([
+            'nama' => $var->nama,
+            'peran' => $var->peran,
+        ]);
+        return $user;
     }
 
     private function get_data($list)
@@ -112,8 +101,7 @@ class MainController extends Controller
         $var = array();
         foreach ($list as $l) {
             $isi = $this->get_isi($l->tipe, $l->id_tipe);
-            $penulis = $this->get_penulis($l->id_penulis);
-//            $penulis = $l->penulis();
+            $penulis = $this->get_user($l->user_id);
             $temp = array(
                 'id' => $l->id,
                 'tipe' => $l->tipe,
@@ -164,57 +152,146 @@ class MainController extends Controller
 
     private function riwayat($id)
     {
-        if ($user = Auth::guard('pakar_api')->user()) {
-            if(Riwayat::where('id_pakar_sawit', $user->id)->count() <= 10) {
-                if (Riwayat::where('id_pakar_sawit', $user->id)->where('id_konten', $id)->exists()){
-                    $temp = Riwayat::where('id_pakar_sawit', $user->id)->where('id_konten', $id);
-                    $temp->delete();
-                }
-                $var = Riwayat::create([
-                    'id_pakar_sawit' => $user->id,
-                    'id_konten' => $id,
-                ]);
-            } else {
-                if (Riwayat::where('id_pakar_sawit', $user->id)->where('id_konten', $id)->exists()){
-                    $temp = Riwayat::where('id_pakar_sawit', $user->id)->where('id_konten', $id);
-                    $temp->delete();
-                } else {
-                    $temp = Riwayat::where('id_pakar_sawit', $user->id)->first();
-                    $temp->delete();
-                }
-                $var = Riwayat::create([
-                    'id_pakar_sawit' => $user->id,
-                    'id_konten' => $id,
-                ]);
+        $user = Auth::guard('api')->user();
+        if (Riwayat::where('user_id', $user->id)->count() <= 10) {
+            if (Riwayat::where('user_id', $user->id)->where('konten_id', $id)->exists()) {
+                $temp = Riwayat::where('user_id', $user->id)->where('konten_id', $id)->first();
+                $temp->delete();
             }
-        } elseif ($user = Auth::guard('petani_api')->user()) {
-            if(Riwayat::where('id_petani', $user->id)->count() < 10) {
-                if (Riwayat::where('id_petani', $user->id)->where('id_konten', $id)->exists()){
-                    $temp = Riwayat::where('id_petani', $user->id)->where('id_konten', $id);
-                    $temp->delete();
-                }
-                $var = Riwayat::create([
-                    'id_petani' => $user->id,
-                    'id_konten' => $id,
-                ]);
+            $var = Riwayat::create([
+                'user_id' => $user->id,
+                'konten_id' => $id,
+            ]);
+        } else {
+            if (Riwayat::where('user_id', $user->id)->where('konten_id', $id)->exists()) {
+                $temp = Riwayat::where('user_id', $user->id)->where('konten_id', $id)->first();
+                $temp->delete();
             } else {
-                if (Riwayat::where('id_petani', $user->id)->where('id_konten', $id)->exists()){
-                    $temp = Riwayat::where('id_petani', $user->id)->where('id_konten', $id);
-                    $temp->delete();
-                } else {
-                    $temp = Riwayat::where('id_petani', $user->id)->first();
-                    $temp->delete();
-                }
-                $var = Riwayat::create([
-                    'id_petani' => $user->id,
-                    'id_konten' => $id,
-                ]);
+                $temp = Riwayat::where('user_id', $user->id)->first();
+                $temp->delete();
             }
+            $var = Riwayat::create([
+                'user_id' => $user->id,
+                'konten_id' => $id,
+            ]);
         }
+
     }
 
     /** Public Function */
     public function get_all()
+    {
+        try {
+            $list = Konten::get();
+
+            $konten = $this->get_data($list);
+
+            return response()->json([
+                'success' => true,
+                'konten' => $konten,
+                'Status' => 200
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'Status' => 500
+            ], 500);
+        }
+    }
+
+    public function get_konten_penulis($id)
+    {
+        try {
+            $list = Konten::where('user_id', $id)->where('is_draft', '=', 0)
+                ->where('is_valid', '=', 1)->where('is_hidden', '=', 0)->get();
+
+            $konten = $this->get_data($list);
+
+            return response()->json([
+                'success' => true,
+                'konten' => $konten,
+                'Status' => 200
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'Status' => 500
+            ], 500);
+        }
+    }
+
+    public function get_all_artikel()
+    {
+        try {
+            $list = Konten::where('is_draft', '=', 0)
+                ->where('is_valid', '=', 1)->where('is_hidden', '=', 0)
+                ->where('tipe', '=', 'Artikel')->get();
+
+            $konten = $this->get_data($list);
+
+            return response()->json([
+                'success' => true,
+                'konten' => $konten,
+                'Status' => 200
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'Status' => 500
+            ], 500);
+        }
+    }
+
+    public function get_all_video_audio()
+    {
+        try {
+            $list = Konten::where('is_draft', '=', 0)
+                ->where('is_valid', '=', 1)->where('is_hidden', '=', 0)
+                ->where('tipe', '=', 'VideoAudio')->get();
+
+            $konten = $this->get_data($list);
+
+            return response()->json([
+                'success' => true,
+                'konten' => $konten,
+                'Status' => 200
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'Status' => 500
+            ], 500);
+        }
+    }
+
+    public function get_all_edokumen()
+    {
+        try {
+            $list = Konten::where('is_draft', '=', 0)
+                ->where('is_valid', '=', 1)->where('is_hidden', '=', 0)
+                ->where('tipe', '=', 'EDokumen')->get();
+
+            $konten = $this->get_data($list);
+
+            return response()->json([
+                'success' => true,
+                'konten' => $konten,
+                'Status' => 200
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'Status' => 500
+            ], 500);
+        }
+    }
+
+    public function get_all_post()
     {
         try {
             $list = Konten::where('is_draft', '=', 0)
@@ -237,38 +314,16 @@ class MainController extends Controller
         }
     }
 
-    public function get_konten_penulis($id)
-    {
-        try {
-//            $penulis = Penulis::where('id', $id)->first();
-            $list = Konten::where('id_penulis', $id)->where('is_draft', '=', 0)
-                ->where('is_valid', '=', 1)->where('is_hidden', '=', 0)->get();
-
-            $konten = $this->get_data($list);
-
-            return response()->json([
-                'success' => true,
-                'konten' => $konten,
-                'Status' => 200
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-                'Status' => 500
-            ], 500);
-        }
-    }
-
     public function show($id)
     {
         try {
             $var = Konten::where('id', $id)->first();
-            if (Auth::guard('petani_api')->check() or Auth::guard('pakar_api')->check()) {
+            $user = Auth::guard('api')->user();
+            if ($user->peran == 'petani' or $user->peran == 'pakar_sawit') {
                 $this->riwayat($var->id);
             }
             $isi = $this->get_isi($var->tipe, $var->id_tipe);
-            $penulis = $this->get_penulis($var->id_penulis);
+            $penulis = $this->get_user($var->user_id);
             $konten = array([
                 'id' => $id,
                 'tipe' => $var->tipe,
@@ -346,10 +401,9 @@ class MainController extends Controller
     public function edit_draft(Request $request, $id)
     {
         try {
-            $user = $this->check_user();
-            if (Penulis::where('nama', '=', $user[0]->nama)->exists()) {
-
-                $konten = Konten::where('id', '=', $id)->first();
+            $user = Auth::guard('api')->user();
+            $konten = Konten::where('id', '=', $id)->first();
+            if ($user->id == $konten->user_id) {
                 if ($konten->is_draft == 0) {
                     return response()->json([
                         'success' => false,
@@ -400,9 +454,9 @@ class MainController extends Controller
     public function draft_to_post($id)
     {
         try {
-            $user = $this->check_user();
-            if (Penulis::where('nama', '=', $user[0]->nama)->exists()) {
-                $konten = Konten::where('id', '=', $id)->first();
+            $user = Auth::guard('api')->user();
+            $konten = Konten::where('id', '=', $id)->first();
+            if ($user->id == $konten->user_id) {
                 $konten->is_draft = 0;
                 $konten->save();
 

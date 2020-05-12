@@ -16,8 +16,7 @@ class LogInCheck
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::guard('admin_api')->check() or Auth::guard('validator_api')->check()
-         or Auth::guard('pakar_api')->check() or Auth::guard('petani_api')->check()) {
+        if (Auth::guard('api')->check()) {
             return $next($request);
         } else {
             return response()->json([

@@ -18,65 +18,32 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
-// Enable CORS
+// TODO: Enable CORS
 Route::group(['middleware' => ['cors']], function () {
 
-    //Pakar
-    Route::group(['prefix' => 'pakar'], function () {
-        Route::post('register', 'API\Auth\RegisterController@pakar_sawit');
-        Route::post('login', 'API\Auth\LoginController@pakar_sawit');
+    Route::post('login', 'API\Auth\LoginController@login');
+    Route::post('logout', 'API\Auth\LogoutController@logout');
 
-        Route::post('bookmark/add/{id}', 'API\BookmarkController@add');
-        Route::post('bookmark/delete/{id}', 'API\BookmarkController@delete');
-        Route::get('bookmark','API\BookmarkController@get_all');
-
-        Route::group(['middleware' => ['auth.pakar']], function () {
-            Route::post('logout', 'API\Auth\LogoutController@pakar_sawit');
-            Route::get('profil', 'API\PakarController@profil');
-
-            Route::group(['prefix' => 'artikel'], function () {
-                Route::post('draft', 'API\Konten\ArtikelController@draft');
-                Route::post('post', 'API\Konten\ArtikelController@post');
-            });
-            Route::group(['prefix' => 'video_audio'], function () {
-                Route::post('draft', 'API\Konten\VideoAudioController@draft');
-                Route::post('post', 'API\Konten\VideoAudioController@post');
-            });
-            Route::group(['prefix' => 'edokumen'], function () {
-                Route::post('draft', 'API\Konten\EDokumenController@draft');
-                Route::post('post', 'API\Konten\EDokumenController@post');
-            });
-        });
-    });
-
-    //Petani
-    Route::group(['prefix' => 'petani'], function () {
-        Route::post('register', 'API\Auth\RegisterController@petani');
-        Route::post('login', 'API\Auth\LoginController@petani');
-
-        Route::group(['middleware' => ['auth.petani']], function () {
-            Route::post('logout', 'API\Auth\LogoutController@petani');
-        });
-    });
-
-    //Admin
+    // TODO: Admin
     Route::group(['prefix' => 'admin'], function () {
         Route::post('register', 'API\Auth\RegisterController@admin');
-        Route::post('login', 'API\Auth\LoginController@admin');
+        Route::post('register/super', 'API\Auth\RegisterController@super_admin');
 
         Route::group(['middleware' => ['auth.admin']], function () {
-            Route::post('logout', 'API\Auth\LogoutController@admin');
+
         });
     });
 
-
-    //Validator
+    // TODO: Validator
     Route::group(['prefix' => 'validator'], function () {
         Route::post('register', 'API\Auth\RegisterController@validator');
-        Route::post('login', 'API\Auth\LoginController@validator');
 
         Route::group(['middleware' => ['auth.validator']], function () {
-            Route::post('logout', 'API\Auth\LogoutController@validator');
+
+            Route::post('draft/edit/{id}', 'API\Konten\MainController@edit_draft');
+            Route::post('draft/post/{id}', 'API\Konten\MainController@draft_to_post');
+            Route::get('konten/not_valid', 'API\Konten\MainController@get_konten_not_valid');
+//            Route::get('konten/')
 
             Route::group(['prefix' => 'artikel'], function () {
                 Route::post('draft', 'API\Konten\ArtikelController@draft');
@@ -93,20 +60,63 @@ Route::group(['middleware' => ['cors']], function () {
         });
     });
 
-// Universal Auth
-    Route::group(['middleware' => ['auth.login']], function () {
-        Route::group(['prefix' => 'konten'], function () {
-            Route::post('pencarian/kategori', 'API\Konten\MainController@search_kategori');
-            Route::post('pencarian', 'API\Konten\MainController@search');
+    // TODO: Pakar
+    Route::group(['prefix' => 'pakar'], function () {
+        Route::post('register', 'API\Auth\RegisterController@pakar_sawit');
+
+        Route::group(['middleware' => ['auth.pakar']], function () {
+            Route::get('profil', 'API\PakarController@profil');
+
+            Route::post('bookmark/add/{id}', 'API\BookmarkController@add');
+            Route::post('bookmark/delete/{id}', 'API\BookmarkController@delete');
+            Route::get('bookmark','API\BookmarkController@get_all');
+
             Route::post('draft/edit/{id}', 'API\Konten\MainController@edit_draft');
             Route::post('draft/post/{id}', 'API\Konten\MainController@draft_to_post');
 
+            Route::group(['prefix' => 'artikel'], function () {
+                Route::post('draft', 'API\Konten\ArtikelController@draft');
+                Route::post('post', 'API\Konten\ArtikelController@post');
+            });
+            Route::group(['prefix' => 'video_audio'], function () {
+                Route::post('draft', 'API\Konten\VideoAudioController@draft');
+                Route::post('post', 'API\Konten\VideoAudioController@post');
+            });
+            Route::group(['prefix' => 'edokumen'], function () {
+                Route::post('draft', 'API\Konten\EDokumenController@draft');
+                Route::post('post', 'API\Konten\EDokumenController@post');
+            });
+        });
+    });
+
+    // TODO: Petani
+    Route::group(['prefix' => 'petani'], function () {
+        Route::post('register', 'API\Auth\RegisterController@petani');
+
+        Route::group(['middleware' => ['auth.petani']], function () {
+            Route::post('bookmark/add/{id}', 'API\BookmarkController@add');
+            Route::post('bookmark/delete/{id}', 'API\BookmarkController@delete');
+            Route::get('bookmark','API\BookmarkController@get_all');
+        });
+    });
+
+    // TODO: Universal Auth
+    Route::group(['middleware' => ['auth.login']], function () {
+        Route::get('profil', 'API\UserController@profil');
+        Route::post('logout', 'API\LogoutController@logout');
+
+        Route::get('konten/{id}', 'API\Konten\MainController@show');
+        Route::group(['prefix' => 'konten'], function () {
+            Route::post('pencarian/kategori', 'API\Konten\MainController@search_kategori');
+            Route::post('pencarian', 'API\Konten\MainController@search');
+            Route::get('post', 'API\Konten\MainController@get_all_post');
+
+            Route::get('artikel', 'API\Konten\MainController@get_all_artikel');
+            Route::get('video_audio', 'API\Konten\MainController@get_all_video_audio');
+            Route::get('edokumen', 'API\Konten\MainController@get_all_edokumen');
             Route::get('penulis/{id}', 'API\Konten\MainController@get_konten_penulis');
 
         });
-
-        Route::get('konten', 'API\Konten\MainController@get_all');
-        Route::get('konten/{id}', 'API\Konten\MainController@show');
     });
 });
 

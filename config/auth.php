@@ -46,52 +46,49 @@ return [
         ],
 
         'api' => [
-            'driver' => 'token',
+            'driver' => 'jwt',
             'provider' => 'users',
-            'hash' => false,
         ],
 
-        'petani' => [
-            'driver' => 'session',
-            'provider' => 'petani',
-        ],
-
-        'petani_api' => [
-            'driver' => 'jwt',
-            'provider' => 'petani',
-        ],
-
-        'pakar' => [
-            'driver' => 'session',
-            'provider' => 'pakar',
-        ],
-
-        'pakar_api' => [
-            'driver' => 'jwt',
-            'provider' => 'pakar',
-        ],
-
-        'admin' => [
-            'driver' => 'session',
-            'provider' => 'admin',
-        ],
-
-        'admin_api' => [
-            'driver' => 'jwt',
-            'provider' => 'admin',
-        ],
-
-        'validator' => [
-            'driver' => 'session',
-            'provider' => 'validator',
-        ],
-
-        'validator_api' => [
-            'driver' => 'jwt',
-            'provider' => 'validator',
-        ],
-
-
+//        'petani' => [
+//            'driver' => 'session',
+//            'provider' => 'petani',
+//        ],
+//
+//        'petani_api' => [
+//            'driver' => 'jwt',
+//            'provider' => 'petani',
+//        ],
+//
+//        'pakar' => [
+//            'driver' => 'session',
+//            'provider' => 'pakar',
+//        ],
+//
+//        'pakar_api' => [
+//            'driver' => 'jwt',
+//            'provider' => 'pakar',
+//        ],
+//
+//        'admin' => [
+//            'driver' => 'session',
+//            'provider' => 'admin',
+//        ],
+//
+//        'admin_api' => [
+//            'driver' => 'jwt',
+//            'provider' => 'admin',
+//        ],
+//
+//        'validator' => [
+//            'driver' => 'session',
+//            'provider' => 'validator',
+//        ],
+//
+//        'validator_api' => [
+//            'driver' => 'jwt',
+//            'provider' => 'validator',
+//        ],
     ],
 
     /*
@@ -116,26 +113,26 @@ return [
             'driver' => 'eloquent',
             'model' => App\User::class,
         ],
-
-        'petani' => [
-            'driver' => 'eloquent',
-            'model' => App\Petani::class,
-        ],
-
-        'pakar' => [
-            'driver' => 'eloquent',
-            'model' => App\PakarSawit::class,
-        ],
-
-        'admin' => [
-            'driver' => 'eloquent',
-            'model' => App\Admin::class,
-        ],
-
-        'validator' => [
-            'driver' => 'eloquent',
-            'model' => App\Validator::class,
-        ],
+//
+//        'petani' => [
+//            'driver' => 'eloquent',
+//            'model' => App\Petani::class,
+//        ],
+//
+//        'pakar' => [
+//            'driver' => 'eloquent',
+//            'model' => App\PakarSawit::class,
+//        ],
+//
+//        'admin' => [
+//            'driver' => 'eloquent',
+//            'model' => App\Admin::class,
+//        ],
+//
+//        'validator' => [
+//            'driver' => 'eloquent',
+//            'model' => App\Validator::class,
+//        ],
 
         // 'users' => [
         //     'driver' => 'database',

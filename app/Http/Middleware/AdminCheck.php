@@ -16,7 +16,8 @@ class AdminCheck
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::guard('admin_api')->check()) {
+        $user = Auth::guard()->user();
+        if ($user->peran == 'admin' or $user->peran == 'super_admin') {
             return $next($request);
         } else {
             return response()->json([
