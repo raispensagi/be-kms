@@ -82,18 +82,12 @@ php artisan serve
 #### Petani
 ```diff
 ! Akun
-POST::  http://localhost:8000/api/petani/login
-- Request
-+ nomor_telefon
-+ password
 POST::  http://localhost:8000/api/petani/register
 - Request
 + nama
-+ nomor_telefon
++ email
++ nomor_telefon (optional, ga di isi ga papa)
 + password
-+ foto
-POST::  http://localhost:8000/api/petani/logout
-GET::   http://localhost:8000/api/petani/profil
 ! Bookmark
 GET::   http://localhost:8000/api/petani/bookmark               (Show bookmark)
 POST::  http://localhost:8000/api/petani/bookmark/add/{id}      (Tambah bookmark, id adalah id dari konten)
@@ -103,18 +97,13 @@ POST::  http://localhost:8000/api/petani/bookmark/delete/{id}   (Hapus bookmark,
 #### Pakar Sawit
 ```diff
 !Akun
-POST::  http://localhost:8000/api/pakar/login
-- Request
-+ email
-+ password
 POST::  http://localhost:8000/api/pakar/register
 - Request
 + nama
 + email
++ nomor_telefon (optional, ga di isi ga papa)
 + password
 + foto
-POST::  http://localhost:8000/api/pakar/logout
-GET::   http://localhost:8000/api/pakar/profil
 ! Bookmark
 GET::   http://localhost:8000/api/pakar/bookmark                (Show bookmark)
 POST::  http://localhost:8000/api/pakar/bookmark/add/{id}       (Tambah bookmark, id adalah id dari konten)
@@ -155,6 +144,14 @@ POST::  http://localhost:8000/api/pakar/edokumen/post           (Post E-Dokumen)
 
 #### Universal
 ```diff
+!Akun
+POST::  http://localhost:8000/api/pakar/login
+- Request
++ email
++ password
+POST::  http://localhost:8000/api/logout
+GET::   http://localhost:8000/api/profil
+!Konten
 POST::   http://localhost:8000/api/konten/pencarian                 (Search biasa)
 - Request
 + keyword
@@ -185,9 +182,13 @@ POST::  http://localhost:8000/api/konten/draft/edit/{id}            (Edit draft,
 + bahasa
 + deskripsi
 + file
+
 POST::  http://localhost:8000/api/konten/draft/post/{id}            (Post Draft, id adalah id dari konten)
 GET::   http://localhost:8000/api/konten/penulis/{id}               (Show konten dari penulis, id adalah id dari penulis)
-GET::   http://localhost:8000/api/konten/                           (Show all konten)
+GET::   http://localhost:8000/api/konten/post                       (Show all konten posted)
+GET::   http://localhost:8000/api/konten/artikel                    (Show all artikel posted)
+GET::   http://localhost:8000/api/konten/video_audio                (Show all video audio posted)
+GET::   http://localhost:8000/api/konten/edokumen                   (Show all edokumen posted)
 GET::   http://localhost:8000/api/konten/{id}                       (Show isi konten)
 ```
 ## Sekian
