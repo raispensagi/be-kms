@@ -145,7 +145,7 @@ POST::  http://localhost:8000/api/pakar/edokumen/post           (Post E-Dokumen)
 #### Universal
 ```diff
 !Akun
-POST::  http://localhost:8000/api/pakar/login
+POST::  http://localhost:8000/api/login
 - Request
 + email
 + password
