@@ -153,6 +153,7 @@ POST::  http://localhost:8000/api/login
 + password
 POST::  http://localhost:8000/api/logout
 GET::   http://localhost:8000/api/profil
+GET::   http://localhost
 !Konten
 POST::   http://localhost:8000/api/konten/pencarian                 (Search biasa)
 - Request
@@ -191,7 +192,7 @@ GET::   http://localhost:8000/api/konten/post                       (Show all ko
 GET::   http://localhost:8000/api/konten/artikel                    (Show all artikel posted)
 GET::   http://localhost:8000/api/konten/video_audio                (Show all video audio posted)
 GET::   http://localhost:8000/api/konten/edokumen                   (Show all edokumen posted)
-GET::   http://localhost:8000/api/konten/{id}                       (Show isi konten)
+GET::   http://localhost:8000/api/konten/show/{id}                  (Show isi konten)
 ```
 ## Sekian
 
