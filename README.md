@@ -92,6 +92,7 @@ POST::  http://localhost:8000/api/petani/register
 GET::   http://localhost:8000/api/petani/bookmark               (Show bookmark)
 POST::  http://localhost:8000/api/petani/bookmark/add/{id}      (Tambah bookmark, id adalah id dari konten)
 POST::  http://localhost:8000/api/petani/bookmark/delete/{id}   (Hapus bookmark, id adalah id dari konten)
+GET::   http://localhost:8000/api/petani/riwayat                (Show riwayat)
 ```
 
 #### Pakar Sawit
@@ -108,6 +109,7 @@ POST::  http://localhost:8000/api/pakar/register
 GET::   http://localhost:8000/api/pakar/bookmark                (Show bookmark)
 POST::  http://localhost:8000/api/pakar/bookmark/add/{id}       (Tambah bookmark, id adalah id dari konten)
 POST::  http://localhost:8000/api/pakar/bookmark/delete/{id}    (Hapus bookmark, id adalah id dari konten)
+GET::   http://localhost:8000/api/pakar/riwayat                 (Show riwayat)
 ! Konten
 POST::  http://localhost:8000/api/pakar/artikel/draft           (Draft Artikel)
 - Request
