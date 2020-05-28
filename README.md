@@ -88,11 +88,13 @@ POST::  http://localhost:8000/api/petani/register
 + email
 + nomor_telefon (optional, ga di isi ga papa)
 + password
-! Bookmark
+! Bookmark dan Riwayat
 GET::   http://localhost:8000/api/petani/bookmark               (Show bookmark)
 POST::  http://localhost:8000/api/petani/bookmark/add/{id}      (Tambah bookmark, id adalah id dari konten)
 POST::  http://localhost:8000/api/petani/bookmark/delete/{id}   (Hapus bookmark, id adalah id dari konten)
 GET::   http://localhost:8000/api/petani/riwayat                (Show riwayat)
+! Notifikasi
+GET::   http://localhost:8000/api/petani/notifikasi                (Show riwayat)
 ```
 
 #### Pakar Sawit
@@ -105,7 +107,7 @@ POST::  http://localhost:8000/api/pakar/register
 + nomor_telefon (optional, ga di isi ga papa)
 + password
 + foto
-! Bookmark
+! Bookmark dan Riwayat
 GET::   http://localhost:8000/api/pakar/bookmark                (Show bookmark)
 POST::  http://localhost:8000/api/pakar/bookmark/add/{id}       (Tambah bookmark, id adalah id dari konten)
 POST::  http://localhost:8000/api/pakar/bookmark/delete/{id}    (Hapus bookmark, id adalah id dari konten)
