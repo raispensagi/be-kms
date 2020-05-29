@@ -88,18 +88,20 @@ POST::  http://localhost:8000/api/petani/register
 + email
 + nomor_telefon (optional, ga di isi ga papa)
 + password
+
 ! Bookmark dan Riwayat
 GET::   http://localhost:8000/api/petani/bookmark               (Show bookmark)
 POST::  http://localhost:8000/api/petani/bookmark/add/{id}      (Tambah bookmark, id adalah id dari konten)
-DEL::   http://localhost:8000/api/petani/bookmark/delete/{id}   (Hapus bookmark, id adalah id dari bookmark)
+DEL::   http://localhost:8000/api/petani/bookmark/delete/{id}   (Hapus bookmark, id adalah id dari konten)
 GET::   http://localhost:8000/api/petani/riwayat                (Show riwayat)
+
 ! Notifikasi
 GET::   http://localhost:8000/api/petani/notifikasi                (Show riwayat)
 ```
 
 #### Pakar Sawit
 ```diff
-!Akun
+! Akun
 POST::  http://localhost:8000/api/pakar/register
 - Request
 + nama
@@ -107,11 +109,9 @@ POST::  http://localhost:8000/api/pakar/register
 + nomor_telefon (optional, ga di isi ga papa)
 + password
 + foto
-! Bookmark dan Riwayat
-GET::   http://localhost:8000/api/pakar/bookmark                (Show bookmark)
-POST::  http://localhost:8000/api/pakar/bookmark/add/{id}       (Tambah bookmark, id adalah id dari konten)
-DEL::   http://localhost:8000/api/pakar/bookmark/delete/{id}    (Hapus bookmark, id adalah id dari bookmark)
-GET::   http://localhost:8000/api/pakar/riwayat                 (Show riwayat)
+POST::  http://localhost:8000/api/pakar/profil/update       (update profil sendiri)
+- Sama seperti register
+
 ! Konten
 POST::  http://localhost:8000/api/pakar/artikel/draft           (Draft Artikel)
 - Request
@@ -144,26 +144,9 @@ POST::  http://localhost:8000/api/pakar/edokumen/draft          (Draft E-Dokumen
 + deskripsi
 + file
 POST::  http://localhost:8000/api/pakar/edokumen/post           (Post E-Dokumen)
-```
-
-#### Universal
-```diff
-!Akun
-POST::  http://localhost:8000/api/login
-- Request
-+ email
-+ password
-POST::  http://localhost:8000/api/logout
-GET::   http://localhost:8000/api/profil
-GET::   http://localhost
-!Konten
-POST::   http://localhost:8000/api/konten/pencarian                 (Search biasa)
-- Request
-+ keyword
-POST::   http://localhost:8000/api/konten/pencarian/kategori        (Search kategori)
-- Request
-+ keyword
-POST::  http://localhost:8000/api/konten/draft/edit/{id}            (Edit draft, tergantung tipe konten Artikel/Video/Edoks)
+- Sama seperti draft
+POST::  http://localhost:8000/api/pakar/draft/post/{id}         (Post Draft, id adalah id dari konten)
+POST::  http://localhost:8000/api/pakar/draft/edit/{id}         (Edit draft, tergantung tipe konten Artikel/Video/Edoks)
 - if Artikel
 + judul
 + kategori
@@ -187,8 +170,167 @@ POST::  http://localhost:8000/api/konten/draft/edit/{id}            (Edit draft,
 + bahasa
 + deskripsi
 + file
+GET::   http://localhost:8000/api/pakar/draft/my        (Get draft konten punya sendiri)
+GET::   http://localhost:8000/api/pakar/post/my         (Get post konten punya sendiri)
+GET::   http://localhost:8000/api/pakar/revisi/my       (Get revisi konten punya sendiri)
 
-POST::  http://localhost:8000/api/konten/draft/post/{id}            (Post Draft, id adalah id dari konten)
+! Notifikasi
+POST:: http://localhost:8000/api/pakar/notifikasi/add/{id}          (Menambah notifikasi)
++ Request
+- headline
+- isi
+```
+
+#### Validator
+```diff
+!Akun
+POST::  http://localhost:8000/api/validator/register
+- Request
++ nama
++ email
++ nomor_telefon (optional, ga di isi ga papa)
++ password
++ foto
+POST::  http://localhost:8000/api/validator/profil/update       (update profil sendiri)
+- Sama seperti register
+
+! Konten
+POST::  http://localhost:8000/api/validator/artikel/draft       (Draft Artikel)
+- Request
++ judul
++ kategori
++ sub_kategori
++ isi
++ foto
+POST::  http://localhost:8000/api/validator/artikel/post        (Post Artikel)
+- Sama seperti draft
+POST::  http://localhost:8000/api/validator/video_audio/draft   (Draft Video/Audio)
+- Request
++ judul
++ kategori
++ sub_kategori
++ isi
++ video_audio
+POST::  http://localhost:8000/api/validator/video_audio/post        (Post Video/Audio)
+- Sama seperti draft
+POST::  http://localhost:8000/api/validator/edokumen/draft          (Draft E-Dokumen)
+- Request
++ judul
++ kategori
++ sub_kategori
++ penulis
++ tahun
++ penerbit
++ halaman
++ bahasa
++ deskripsi
++ file
+POST::  http://localhost:8000/api/validator/edokumen/post           (Post E-Dokumen)
+- Sama seperti draft
+POST::  http://localhost:8000/api/validator/draft/post/{id}         (Post Draft, id adalah id dari konten)
+POST::  http://localhost:8000/api/validator/draft/edit/{id}         (Edit draft, tergantung tipe konten Artikel/Video/Edoks)
+- if Artikel
++ judul
++ kategori
++ sub_kategori
++ isi
++ foto
+- if VideoAudio
++ judul
++ kategori
++ sub_kategori
++ isi
++ video_audio
+- if EDokumen
++ judul
++ kategori
++ sub_kategori
++ penulis
++ tahun
++ penerbit
++ halaman
++ bahasa
++ deskripsi
++ file
+GET::   http://localhost:8000/api/validator/draft/my        (Get draft konten punya sendiri)
+GET::   http://localhost:8000/api/validator/post/my         (Get post konten punya sendiri)
+GET::   http://localhost:8000/api/validator/konten/all      (Get all konten)
+POST::  http://localhost:8000/api/validator/konten/hide/{id}          (Menyembunyikan konten berdasarkan id)
+POST::  http://localhost:8000/api/validator/konten/unhide/{id}        (Memunculkan konten yg telah disembunyikan)
+DEL::   http://localhost:8000/api/validator/konten/delete/{id}        (Menghapus konten yg berdasarkan id)
+
+! Validasi
+GET::   http://localhost:8000/api/validator/konten/not_valid            (Get konten yang belum valid)
+GET::   http://localhost:8000/api/validator/konten/not_valid/user/{id}  (Get konten yang belum valid dari user)
+POST::  http://localhost:8000/api/validator/konten/validasi/{id}        (Validasi konten, id adalah id konten)
+POST::  http://localhost:8000/api/validator/konten/revisi/{id}          (Revisi konten, id adalah id konten)
+- Request
++ komentar
+
+! Notifikasi
+POST:: http://localhost:8000/api/validator/notifikasi/add/{id}          (Menambah notifikasi)
++ Request
+- headline
+- isi
+```
+
+#### Admin dan Super Admin
+```diff
+!Akun
+POST::  http://localhost:8000/api/admin/register            (untuk Admin)
+- Request
++ nama
++ email
++ nomor_telefon (optional, ga di isi ga papa)
++ password
++ foto
+POST::  http://localhost:8000/api/admin/register/super      (untuk Super Admin)
+- Sama seperti register Admin
+POST::  http://localhost:8000/api/admin/create_admin        (membuat akun Admin lain oleh Super Admin)
+- Sama seperti register Admin
+GET::   http://localhost:8000/api/admin/profil
+POST::  http://localhost:8000/api/admin/profil/update       (update profil sendiri)
+- Sama seperti register Admin
+GET::   http://localhost:8000/api/admin/user/list           (menampilkan daftar user)
+POST::  http://localhost:8000/api/admin/user/update/{id}    (update profil user lain berdasarkan id)
+- Sama seperti register Admin
+DEL::   http://localhost:8000/api/admin/user/delete/{id}    (menghapus profil user lain berdasarkan id)
+
+! Konten
+GET::   http://localhost:8000/api/admin/konten/all                (Get all konten)
+POST::  http://localhost:8000/api/admin/konten/hide/{id}          (Menyembunyikan konten berdasarkan id)
+POST::  http://localhost:8000/api/admin/konten/unhide/{id}        (Memunculkan konten yg telah disembunyikan)
+DEL::   http://localhost:8000/api/admin/konten/delete/{id}        (Menghapus konten yg berdasarkan id)
+
+! Notifikasi
+POST:: http://localhost:8000/api/admin/notifikasi/add/{id}          (Menambah notifikasi)
++ Request
+- headline
+- isi
+```
+
+#### Universal
+```diff
+!Akun
+POST::  http://localhost:8000/api/login
+- Request
++ email
++ password
+POST::  http://localhost:8000/api/logout
+GET::   http://localhost:8000/api/profil
+GET::   http://localhost:8000/api/profil/show/{id}                  (Show profil user lain berdasarkan id)
+
+! Notifikasi
+GET::   http://localhost:8000/api/notifikasi/show/{id}              (Show notifikasi berdasar id)
+GET::   http://localhost:8000/api/notifikasi/all                    (Get all notifikasi)
+
+!Konten
+POST::   http://localhost:8000/api/konten/pencarian                 (Search biasa)
+- Request
++ keyword
+POST::   http://localhost:8000/api/konten/pencarian/kategori        (Search kategori)
+- Request
++ keyword
 GET::   http://localhost:8000/api/konten/penulis/{id}               (Show konten dari penulis, id adalah id dari penulis)
 GET::   http://localhost:8000/api/konten/post                       (Show all konten posted)
 GET::   http://localhost:8000/api/konten/artikel                    (Show all artikel posted)
