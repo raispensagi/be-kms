@@ -91,7 +91,7 @@ POST::  http://localhost:8000/api/petani/register
 ! Bookmark dan Riwayat
 GET::   http://localhost:8000/api/petani/bookmark               (Show bookmark)
 POST::  http://localhost:8000/api/petani/bookmark/add/{id}      (Tambah bookmark, id adalah id dari konten)
-POST::  http://localhost:8000/api/petani/bookmark/delete/{id}   (Hapus bookmark, id adalah id dari konten)
+DEL::   http://localhost:8000/api/petani/bookmark/delete/{id}   (Hapus bookmark, id adalah id dari bookmark)
 GET::   http://localhost:8000/api/petani/riwayat                (Show riwayat)
 ! Notifikasi
 GET::   http://localhost:8000/api/petani/notifikasi                (Show riwayat)
@@ -110,7 +110,7 @@ POST::  http://localhost:8000/api/pakar/register
 ! Bookmark dan Riwayat
 GET::   http://localhost:8000/api/pakar/bookmark                (Show bookmark)
 POST::  http://localhost:8000/api/pakar/bookmark/add/{id}       (Tambah bookmark, id adalah id dari konten)
-POST::  http://localhost:8000/api/pakar/bookmark/delete/{id}    (Hapus bookmark, id adalah id dari konten)
+DEL::   http://localhost:8000/api/pakar/bookmark/delete/{id}    (Hapus bookmark, id adalah id dari bookmark)
 GET::   http://localhost:8000/api/pakar/riwayat                 (Show riwayat)
 ! Konten
 POST::  http://localhost:8000/api/pakar/artikel/draft           (Draft Artikel)
