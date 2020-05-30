@@ -16,7 +16,7 @@ class PakarCheck
      */
     public function handle($request, Closure $next)
     {
-        $user = Auth::guard()->user();
+        $user = Auth::guard('api')->user();
         if ($user->peran == 'pakar_sawit') {
             return $next($request);
         } else {

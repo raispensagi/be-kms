@@ -16,7 +16,7 @@ class SuperCheck
      */
     public function handle($request, Closure $next)
     {
-        $user = Auth::guard()->user();
+        $user = Auth::guard('api')->user();
         if ($user->peran == 'super_admin') {
             return $next($request);
         } else {

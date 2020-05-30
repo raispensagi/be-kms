@@ -126,6 +126,7 @@ class ArtikelController extends Controller
                         'tipe' => 'Artikel',
                         'id_tipe' => $artikel->id,
                         'is_draft' => 0,
+                        'is_valid' => 1,
                         'user_id' => $user->id,
                     ]);
 
@@ -154,65 +155,127 @@ class ArtikelController extends Controller
         }
     }
 
-//    public function edit_draft(Request $request, $id)
-//    {
-//        try {
-//            $user = $this->check_user();
-//            if (Penulis::where('nama', '=', $user[0]->nama)->exists()) {
-//
-//                $konten = Konten::where('id', '=', $id)->first();
-////                dd($request);
-//                if ($konten->is_draft == 0) {
-//                    return response()->json([
-//                        'success' => false,
-//                        'message' => 'Anda tidak bisa mengubah konten yang sudah di-post',
-//                        'Status' => 500
-//                    ], 500);
-//                }
-//
-//                if (Konten::where('judul', '=', $request->judul)->where('id', '!=', $id)->exists()) {
-//                    return response()->json([
-//                        'success' => false,
-//                        'message' => 'Judul sudah ada',
-//                        'Status' => 500
-//                    ], 500);
-//                }
-//                $konten->kategori = $request->kategori;
-//                $konten->sub_kategori = $request->sub_kategori;
-//                $konten->judul = $request->judul;
-//                $konten->tanggal = Carbon::now()->format('d F Y H:i:s');
-//                $konten->save();
-//
-//                $artikel = Artikel::where('id', '=', $konten->id_tipe)->first();
-//                $artikel->isi = $request->isi;
-//                $foto = $this->upload_foto($request, 'foto', 'Artikel', $artikel->id);
-//                if ($foto != NULL) {
-//                    $artikel->foto = $foto;
-//                }
-//                $artikel->save();
-//
-//                return response()->json([
-//                    'success' => true,
-//                    'message' => 'Artikel telah diperbaharui',
-//                    'judul' => $request->judul,
-//                    'kategori' => $request->kategori,
-//                    'sub_kategori' => $request->sub_kategori,
-//                    'Status' => 201
-//                ], 201);
-//            } else {
-//                return response()->json([
-//                    'success' => false,
-//                    'message' => 'Maaf, Anda tidak bisa mengubah Konten orang lain!',
-//                    'Status' => 500
-//                ], 500);
-//            };
-//        } catch (\Exception $e) {
-//            return response()->json([
-//                'success' => false,
-//                'message' => $e->getMessage(),
-//                'Status' => 500
-//            ], 500);
-//        }
-//    }
+    /** Apabila ada aplikasi WEB, bedanya untuk web harus divalidasi terlebih dahulu */
+    public function draft_web(Request $request)
+    {
+        try {
+            if (Konten::where('judul', '=', $request->judul)->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Judul sudah ada',
+                    'Status' => 500
+                ], 500);
+            } else {
+                // checking user privilage
+                $user = Auth::guard('api')->user();
+
+                if ($user->peran == 'pakar_sawit' or $user->peran == 'validator') {
+                    $artikel = Artikel::create([
+                        'isi' => $request->isi,
+                        'foto' => 'default.png',
+                    ]);
+
+                    $foto = $this->upload_foto($request, 'foto', 'Artikel', $artikel->id);
+                    if ($foto != NULL) {
+                        $artikel->foto = $foto;
+                        $artikel->save();
+                    }
+
+                    $konten = Konten::create([
+                        'judul' => $request->judul,
+                        'tanggal' => Carbon::now()->format('d F Y H:i:s'),
+                        'kategori' => $request->kategori,
+                        'sub_kategori' => $request->sub_kategori,
+                        'tipe' => 'Artikel',
+                        'id_tipe' => $artikel->id,
+                        'is_draft' => 1,
+                        'user_id' => $user->id,
+                    ]);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Artikel tersimpan',
+                        'judul' => $request->judul,
+                        'kategori' => $request->kategori,
+                        'sub_kategori' => $request->sub_kategori,
+                        'Status' => 201
+                    ], 201);
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Anda tidak bisa membuat konten',
+                        'Status' => 500
+                    ], 500);
+                }
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'Status' => 500
+            ], 500);
+        }
+    }
+
+    public function post_web(Request $request)
+    {
+        try {
+            if (Konten::where('judul', '=', $request->judul)->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Judul sudah ada',
+                    'Status' => 500
+                ], 500);
+            } else {
+                // checking user privilage
+                $user = Auth::guard('api')->user();
+
+                if ($user->peran == 'pakar_sawit' or $user->peran == 'validator') {
+                    $artikel = Artikel::create([
+                        'isi' => $request->isi,
+                        'foto' => 'default.png',
+                    ]);
+
+                    $foto = $this->upload_foto($request, 'foto', 'Artikel', $artikel->id);
+                    if ($foto != NULL) {
+                        $artikel->foto = $foto;
+                        $artikel->save();
+                    }
+
+                    $konten = Konten::create([
+                        'judul' => $request->judul,
+                        'tanggal' => Carbon::now()->format('d F Y H:i:s'),
+                        'kategori' => $request->kategori,
+                        'sub_kategori' => $request->sub_kategori,
+                        'tipe' => 'Artikel',
+                        'id_tipe' => $artikel->id,
+                        'is_draft' => 0,
+                        'user_id' => $user->id,
+                    ]);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Artikel tersimpan',
+                        'judul' => $request->judul,
+                        'kategori' => $request->kategori,
+                        'sub_kategori' => $request->sub_kategori,
+                        'Status' => 201
+                    ], 201);
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Anda tidak bisa membuat konten',
+                        'Status' => 500
+                    ], 500);
+                }
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'Status' => 500
+            ], 500);
+        }
+    }
 
 }

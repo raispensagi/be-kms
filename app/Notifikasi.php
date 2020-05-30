@@ -10,7 +10,11 @@ class Notifikasi extends Model
     protected $table = 'notifikasi';
 
     protected $fillable = [
-        'headline', 'isi', 'penulis'
+        'headline', 'isi', 'tanggal', 'user_id'
     ];
 
+    public function user()
+    {
+        return $this->hasOne('App\User');
+    }
 }

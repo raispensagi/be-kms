@@ -16,7 +16,7 @@ class PetaniCheck
      */
     public function handle($request, Closure $next)
     {
-        $user = Auth::guard()->user();
+        $user = Auth::guard('api')->user();
         if ($user->peran == 'petani') {
             return $next($request);
         } else {

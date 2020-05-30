@@ -6,8 +6,10 @@ use App\Artikel;
 use App\EDokumen;
 use App\Http\Controllers\Controller;
 use App\Konten;
+use App\Revisi;
 use App\User;
 use App\VideoAudio;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -96,10 +98,10 @@ class ValidatorController extends Controller
         }
     }
 
-    public function get_konten_not_valid_penulis($id)
+    public function get_konten_not_valid_penulis($id) // id = id user
     {
         try {
-            $list = Konten::where('is_draft', '=', 0)
+            $list = Konten::where('user_id', $id)->where('is_draft', '=', 0)
                 ->where('is_valid', '=', 0)->where('is_hidden', '=', 0)->get();
 
             $konten = $this->get_data($list);
@@ -118,59 +120,22 @@ class ValidatorController extends Controller
         }
     }
 
-    public function get_my_draft()
-    {
+    public function validasi($id) {
         try {
-            $id = Auth::guard('api')->user()->id;
-            $list = Konten::where('is_draft', '=', 1)
-                ->where('is_valid', '=', 0)->where('is_hidden', '=', 0)
-                ->get();
-
-            $konten = $this->get_data($list);
-
-            return response()->json([
-                'success' => true,
-                'konten' => $konten,
-                'Status' => 200
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-                'Status' => 500
-            ], 500);
-        }
-    }
-
-    public function get_my_post()
-    {
-        try {
-            $list = Konten::where('is_draft', '=', 0)
-                ->where('is_valid', '=', 1)->where('is_hidden', '=', 0)
-                ->get();
-
-            $konten = $this->get_data($list);
-
-            return response()->json([
-                'success' => true,
-                'konten' => $konten,
-                'Status' => 200
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-                'Status' => 500
-            ], 500);
-        }
-    }
-
-    public function validate($id) {
-        try {
-            $konten = Konten::where('id', $id)->first();
+            $user = Auth::guard('api')->user();
+            $konten = Konten::where("id", $id)->first();
+            if ($konten->user_id == $user->id) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Anda tidak bisa memvalidasi konten Anda sendiri",
+                    'Status' => 403
+                ], 403);
+            }
             if ($konten->is_valid == 0) {
                 $konten->is_valid = 1;
                 $konten->save();
+
+//                $konten = $this->get_data($konten);
                 return response()->json([
                     'success' => true,
                     'konten' => $konten,
@@ -179,7 +144,7 @@ class ValidatorController extends Controller
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Konten telah valid',
+                    'message' => 'Konten sudah valid',
                     'Status' => 500
                 ], 500);
             }
@@ -193,23 +158,45 @@ class ValidatorController extends Controller
         }
     }
 
-    public function unvalidate($id) {
+    public function revisi(Request $request, $id) {
         try {
-            $konten = Konten::where('id', $id)->first();
-            if ($konten->is_valid == 1) {
-                $konten->is_valid = 0;
-                $konten->save();
+            $user = Auth::guard('api')->user();
+            $konten = Konten::where("id", $id)->first();
+            if ($konten->user_id == $user->id) {
                 return response()->json([
                     'success' => true,
-                    'konten' => $konten,
+                    'message' => "Anda tidak bisa memvalidasi konten Anda sendiri",
+                    'Status' => 403
+                ], 403);
+            }
+            if ($konten->is_valid == 1) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Konten sudah Valid",
+                    'Status' => 403
+                ], 403);
+            } elseif ($konten->is_draft == 1) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Konten masih dalam draft",
+                    'Status' => 403
+                ], 403);
+            } else {
+                $konten->is_draft = 1;
+                $konten->save();
+
+                $revisi = Revisi::create([
+                    'komentar' => $request->komentar,
+                    'tanggal' => Carbon::now()->format('d F Y H:i:s'),
+                    'user_id' => $user->id,
+                    'konten_id' => $konten->id
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => "Konten telah direvisi",
                     'Status' => 200
                 ], 200);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Konten belum valid',
-                    'Status' => 500
-                ], 500);
             }
 
         } catch (\Exception $e) {

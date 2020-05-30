@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
+    private function check_null($var){
+
+    }
+
     public function admin(Request $request)
     {
         try {

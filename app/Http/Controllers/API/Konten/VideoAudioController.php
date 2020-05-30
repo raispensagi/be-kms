@@ -46,15 +46,21 @@ class VideoAudioController extends Controller
                 $user = Auth::guard('api')->user();
 
                 if ($user->peran == 'pakar_sawit' or $user->peran == 'validator') {
-                    $video = VideoAudio::create([
-                        'isi' => $request->isi,
-                        'video_audio' => 'default.png',
-                    ]);
-
-                    $file = $this->upload_file($request, 'video_audio', 'VideoAudio', $video->id);
-                    if ($file != NULL) {
-                        $video->video_audio = $file;
-                        $video->save();
+                    if ($request->file('video_audio') != null) {
+                        $video = VideoAudio::create([
+                            'isi' => $request->isi,
+                            'video_audio' => 'default.png',
+                        ]);
+                        $file = $this->upload_file($request, 'video_audio', 'VideoAudio', $video->id);
+                        if ($file != NULL) {
+                            $video->video_audio = $file;
+                            $video->save();
+                        }
+                    } else {
+                        $video = VideoAudio::create([
+                            'isi' => $request->isi,
+                            'video_audio' => $request->video_audio,
+                        ]);
                     }
 
                     $konten = Konten::create([
@@ -62,15 +68,15 @@ class VideoAudioController extends Controller
                         'tanggal' => Carbon::now()->format('d F Y H:i:s'),
                         'kategori' => $request->kategori,
                         'sub_kategori' => $request->sub_kategori,
-                        'tipe' => 'VideoAudio',
+                        'tipe' => 'Video',
                         'id_tipe' => $video->id,
                         'is_draft' => 1,
-                        'id_penulis' => $user->id,
+                        'user_id' => $user->id,
                     ]);
 
                     return response()->json([
                         'success' => true,
-                        'message' => 'Video atau Audio tersimpan',
+                        'message' => 'Video tersimpan',
                         'judul' => $request->judul,
                         'kategori' => $request->kategori,
                         'sub_kategori' => $request->sub_kategori,
@@ -107,15 +113,155 @@ class VideoAudioController extends Controller
                 $user = Auth::guard('api')->user();
 
                 if ($user->peran == 'pakar_sawit' or $user->peran == 'validator') {
-                    $video = VideoAudio::create([
-                        'isi' => $request->isi,
-                        'video_audio' => 'default.png',
+                    if ($request->file('video_audio') != null) {
+                        $video = VideoAudio::create([
+                            'isi' => $request->isi,
+                            'video_audio' => 'default.png',
+                        ]);
+                        $file = $this->upload_file($request, 'video_audio', 'VideoAudio', $video->id);
+                        if ($file != NULL) {
+                            $video->video_audio = $file;
+                            $video->save();
+                        }
+                    } else {
+                        $video = VideoAudio::create([
+                            'isi' => $request->isi,
+                            'video_audio' => $request->video_audio,
+                        ]);
+                    }
+                    $konten = Konten::create([
+                        'judul' => $request->judul,
+                        'tanggal' => Carbon::now()->format('d F Y H:i:s'),
+                        'kategori' => $request->kategori,
+                        'sub_kategori' => $request->sub_kategori,
+                        'tipe' => 'Video',
+                        'id_tipe' => $video->id,
+                        'is_draft' => 0,
+                        'is_valid' => 1,
+                        'user_id' => $user->id,
                     ]);
 
-                    $file = $this->upload_file($request, 'video_audio', 'VideoAudio', $video->id);
-                    if ($file != NULL) {
-                        $video->video_audio = $file;
-                        $video->save();
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Video tersimpan',
+                        'judul' => $request->judul,
+                        'kategori' => $request->kategori,
+                        'sub_kategori' => $request->sub_kategori,
+                        'Status' => 201
+                    ], 201);
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Anda tidak bisa membuat konten',
+                        'Status' => 500
+                    ], 500);
+                }
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'Status' => 500
+            ], 500);
+        }
+    }
+
+    /** Apabila ada aplikasi WEB, bedanya untuk web harus divalidasi terlebih dahulu */
+    public function draft_web(Request $request)
+    {
+        try {
+            if (Konten::where('judul', '=', $request->judul)->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Judul sudah ada',
+                    'Status' => 500
+                ], 500);
+            } else {
+                // checking user privilage
+                $user = Auth::guard('api')->user();
+
+                if ($user->peran == 'pakar_sawit' or $user->peran == 'validator') {
+                    if ($request->file('video_audio') != null) {
+                        $video = VideoAudio::create([
+                            'isi' => $request->isi,
+                            'video_audio' => 'default.png',
+                        ]);
+                        $file = $this->upload_file($request, 'video_audio', 'VideoAudio', $video->id);
+                        if ($file != NULL) {
+                            $video->video_audio = $file;
+                            $video->save();
+                        }
+                    } else {
+                        $video = VideoAudio::create([
+                            'isi' => $request->isi,
+                            'video_audio' => $request->video_audio,
+                        ]);
+                    }
+                    $konten = Konten::create([
+                        'judul' => $request->judul,
+                        'tanggal' => Carbon::now()->format('d F Y H:i:s'),
+                        'kategori' => $request->kategori,
+                        'sub_kategori' => $request->sub_kategori,
+                        'tipe' => 'Video',
+                        'id_tipe' => $video->id,
+                        'is_draft' => 1,
+                        'user_id' => $user->id,
+                    ]);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Video tersimpan',
+                        'judul' => $request->judul,
+                        'kategori' => $request->kategori,
+                        'sub_kategori' => $request->sub_kategori,
+                        'Status' => 201
+                    ], 201);
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Anda tidak bisa membuat konten',
+                        'Status' => 500
+                    ], 500);
+                }
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'Status' => 500
+            ], 500);
+        }
+    }
+
+    public function post_web(Request $request)
+    {
+        try {
+            if (Konten::where('judul', '=', $request->judul)->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Judul sudah ada',
+                    'Status' => 500
+                ], 500);
+            } else {
+                // checking user privilage
+                $user = Auth::guard('api')->user();
+
+                if ($user->peran == 'pakar_sawit' or $user->peran == 'validator') {
+                    if ($request->file('video_audio') != null) {
+                        $video = VideoAudio::create([
+                            'isi' => $request->isi,
+                            'video_audio' => 'default.png',
+                        ]);
+                        $file = $this->upload_file($request, 'video_audio', 'VideoAudio', $video->id);
+                        if ($file != NULL) {
+                            $video->video_audio = $file;
+                            $video->save();
+                        }
+                    } else {
+                        $video = VideoAudio::create([
+                            'isi' => $request->isi,
+                            'video_audio' => $request->video_audio,
+                        ]);
                     }
 
                     $konten = Konten::create([
@@ -123,15 +269,15 @@ class VideoAudioController extends Controller
                         'tanggal' => Carbon::now()->format('d F Y H:i:s'),
                         'kategori' => $request->kategori,
                         'sub_kategori' => $request->sub_kategori,
-                        'tipe' => 'VideoAudio',
+                        'tipe' => 'Video',
                         'id_tipe' => $video->id,
                         'is_draft' => 0,
-                        'id_penulis' => $user->id,
+                        'user_id' => $user->id,
                     ]);
 
                     return response()->json([
                         'success' => true,
-                        'message' => 'Video atau Audio tersimpan',
+                        'message' => 'Video tersimpan',
                         'judul' => $request->judul,
                         'kategori' => $request->kategori,
                         'sub_kategori' => $request->sub_kategori,

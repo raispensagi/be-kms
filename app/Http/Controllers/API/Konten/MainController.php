@@ -8,12 +8,14 @@ use App\EDokumen;
 use App\Http\Controllers\Controller;
 use App\Konten;
 use App\Notifikasi;
+use App\Revisi;
 use App\Riwayat;
 use App\User;
 use App\VideoAudio;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class MainController extends Controller
 {
@@ -65,7 +67,7 @@ class MainController extends Controller
                 'foto' => $temp->foto,
             ]);
 //        }
-        } elseif ($tipe == "VideoAudio") {
+        } elseif ($tipe == "Video") {
             $temp = VideoAudio::where('id', '=', $id)->first();
             $var = array([
                 'isi' => $temp->isi,
@@ -98,18 +100,53 @@ class MainController extends Controller
 
     private function get_data($list)
     {
+        $user = Auth::guard('api')->user();
         $var = array();
         foreach ($list as $l) {
             $isi = $this->get_isi($l->tipe, $l->id_tipe);
             $penulis = $this->get_user($l->user_id);
-            $temp = array(
-                'id' => $l->id,
-                'tipe' => $l->tipe,
-                'judul' => $l->judul,
-                'tanggal' => $l->tanggal,
-                'konten' => $isi,
-                'penulis' => $penulis
-            );
+            if (Bookmark::where('user_id', $user->id)->where('konten_id', $l->id)->exists()) {
+                $bookmarked = true;
+            } else {
+                $bookmarked = false;
+            }
+            if (Revisi::where('konten_id', $l->id)->exists()) {
+                $rev = Revisi::where('konten_id', $l->id)->get();
+                $revisi = array();
+                foreach ($rev as $r) {
+                    $temp = array(
+                        'id' => $r->id,
+                        'komentar' => $r->komentar,
+                        'tanggal' => $r->tanggal,
+                        'validator' => $r->user->nama,
+                    );
+                    array_push($revisi, $temp);
+                }
+                $temp = array(
+                    'id' => $l->id,
+                    'tipe' => $l->tipe,
+                    'judul' => $l->judul,
+                    'kategori' => $l->kategori,
+                    'sub_kategori' => $l->sub_kategori,
+                    'tanggal' => $l->tanggal,
+                    'konten' => $isi,
+                    'penulis' => $penulis,
+                    'revisi' => $revisi,
+                    'bookmark' => $bookmarked
+                );
+            } else {
+                $temp = array(
+                    'id' => $l->id,
+                    'tipe' => $l->tipe,
+                    'judul' => $l->judul,
+                    'kategori' => $l->kategori,
+                    'sub_kategori' => $l->sub_kategori,
+                    'tanggal' => $l->tanggal,
+                    'konten' => $isi,
+                    'penulis' => $penulis,
+                    'bookmark' => $bookmarked
+                );
+            }
             array_push($var, $temp);
         }
         return $var;
@@ -119,34 +156,53 @@ class MainController extends Controller
     {
         if ($tipe == "Artikel") {
             $var = Artikel::where('id', '=', $id)->first();
-            $var->isi = $request->isi;
+            if ($request->isi != null) {
+                $var->isi = $request->isi;
+            }
             $foto = $this->upload_foto($request, 'foto', 'Artikel', $var->id);
             if ($foto != NULL) {
+                $path = 'img/foto/' . $var->foto;
+                File::delete($path);
                 $var->foto = $foto;
             }
             $var->save();
 //        }
-        } elseif ($tipe == "VideoAudio") {
-            $var = Artikel::where('id', '=', $id)->first();
-            $var->isi = $request->isi;
-            $file = $this->upload_file($request, 'video_audio', 'VideoAudio', $var->id);
-            if ($file != NULL) {
-                $var->video_audio = $file;
+        } elseif ($tipe == "Video") {
+            $var = VideoAudio::where('id', '=', $id)->first();
+            if ($request->isi != null) {
+                $var->isi = $request->isi;
+            }
+            if ($request->file('video_audio') != null) {
+                $file = $this->upload_file($request, 'video_audio', 'VideoAudio', $var->id);
+                if ($file != NULL) {
+                    $path = 'file/video_audio/' . $var->video_audio;
+                    File::delete($path);
+                    $var->video_audio = $file;
+                }
+            } else {
+                $var->video_audio = $request->video_audio;
             }
             $var->save();
         } elseif ($tipe == "EDokumen") {
-            $var = Artikel::where('id', '=', $id)->first();
+            $var = EDokumen::where('id', '=', $id)->first();
             $var->penulis = $request->penulis;
             $var->tahun = $request->tahun;
             $var->penerbit = $request->penerbit;
             $var->halaman = $request->halaman;
             $var->bahasa = $request->bahasa;
             $var->deskripsi = $request->deskripsi;
-            $file = $this->upload_file($request, 'file', 'EDokumen', $var->id);
-            if ($file != NULL) {
-                $var->file = $file;
+            if ($request->file('file') != null) {
+                $file = $this->upload_file($request, 'file', 'EDokumen', $var->id);
+                if ($file != NULL) {
+                    $path = 'file/file/' . $var->file;
+                    File::delete($path);
+                    $var->file = $file;
+                }
+            } else {
+                $var->file = $request->file;
             }
             $var->save();
+
         }
     }
 
@@ -250,7 +306,7 @@ class MainController extends Controller
         try {
             $list = Konten::where('is_draft', '=', 0)
                 ->where('is_valid', '=', 1)->where('is_hidden', '=', 0)
-                ->where('tipe', '=', 'VideoAudio')->get();
+                ->where('tipe', '=', 'Video')->get();
 
             $konten = $this->get_data($list);
 
@@ -294,10 +350,11 @@ class MainController extends Controller
     public function get_all_post()
     {
         try {
-            $list = Konten::where('is_draft', '=', 0)
-                ->where('is_valid', '=', 1)->where('is_hidden', '=', 0)
+//            dd("ayam");
+            $list = Konten::where('is_draft', 0)
+                ->where('is_valid', 1)->where('is_hidden', 0)
                 ->get();
-
+//            dd($list);
             $konten = $this->get_data($list);
 
             return response()->json([
@@ -322,6 +379,11 @@ class MainController extends Controller
             if ($user->peran == 'petani' or $user->peran == 'pakar_sawit') {
                 $this->riwayat($var->id);
             }
+            if (Bookmark::where('user_id', $user->id)->where('konten_id', $id)->exists()) {
+                $bookmarked = true;
+            } else {
+                $bookmarked = false;
+            }
             $isi = $this->get_isi($var->tipe, $var->id_tipe);
             $penulis = $this->get_user($var->user_id);
             $konten = array([
@@ -330,7 +392,8 @@ class MainController extends Controller
                 'judul' => $var->judul,
                 'tanggal' => $var->tanggal,
                 'konten' => $isi,
-                'penulis' => $penulis
+                'penulis' => $penulis,
+                'bookmark' => $bookmarked
             ]);
             return response()->json([
                 'success' => true,
@@ -352,7 +415,7 @@ class MainController extends Controller
             $list = Konten::where('kategori', '=', $request->kategori)
                 ->where('sub_kategori', '=', $request->sub_kategori)
                 ->where('is_draft', '=', 0)->where('is_valid', '=', 1)
-                ->where('is_hidden', '=', 0)->all();
+                ->where('is_hidden', '=', 0)->get();
 
             $konten = $this->get_data($list);
 
@@ -380,7 +443,7 @@ class MainController extends Controller
                     ->orWhere('sub_kategori', 'like', '%' . $keyword . '%')
                     ->orWhere('judul', 'like', '%' . $keyword . '%');
             })->where('is_draft', '=', 0)->where('is_valid', '=', 1)
-                ->where('is_hidden', '=', 0)->all();
+                ->where('is_hidden', '=', 0)->get();
 
             $konten = $this->get_data($list);
 
@@ -408,8 +471,8 @@ class MainController extends Controller
                     return response()->json([
                         'success' => false,
                         'message' => 'Anda tidak bisa mengubah konten yang sudah di-post',
-                        'Status' => 500
-                    ], 500);
+                        'Status' => 403
+                    ], 403);
                 }
 
                 if (Konten::where('judul', '=', $request->judul)->where('id', '!=', $id)->exists()) {
@@ -419,9 +482,16 @@ class MainController extends Controller
                         'Status' => 500
                     ], 500);
                 }
-                $konten->kategori = $request->kategori;
-                $konten->sub_kategori = $request->sub_kategori;
-                $konten->judul = $request->judul;
+
+                if ($request->judul != null) {
+                    $konten->judul = $request->judul;
+                }
+                if ($request->kategori != null) {
+                    $konten->kategori = $request->kategori;
+                }
+                if ($request->sub_kategori != null) {
+                    $konten->sub_kategori = $request->sub_kategori;
+                }
                 $konten->tanggal = Carbon::now()->format('d F Y H:i:s');
                 $konten->save();
 
@@ -430,9 +500,9 @@ class MainController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Konten telah diperbaharui',
-                    'judul' => $request->judul,
-                    'kategori' => $request->kategori,
-                    'sub_kategori' => $request->sub_kategori,
+                    'judul' => $konten->judul,
+                    'kategori' => $konten->kategori,
+                    'sub_kategori' => $konten->sub_kategori,
                     'Status' => 201
                 ], 201);
             } else {
@@ -475,6 +545,201 @@ class MainController extends Controller
                     'Status' => 500
                 ], 500);
             }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'Status' => 500
+            ], 500);
+        }
+    }
+
+    public function get_my_draft()
+    {
+        try {
+            $id = Auth::guard('api')->user()->id;
+            $list = Konten::where('is_draft', '=', 1)
+                ->where('is_valid', '=', 0)->where('is_hidden', '=', 0)
+                ->get();
+
+            $konten = $this->get_data($list);
+
+            return response()->json([
+                'success' => true,
+                'konten' => $konten,
+                'Status' => 200
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'Status' => 500
+            ], 500);
+        }
+    }
+
+    public function get_my_post()
+    {
+        try {
+            $id = Auth::guard('api')->user()->id;
+            $list = Konten::where('is_draft', '=', 0)
+                ->where('is_valid', '=', 0)->where('is_hidden', '=', 0)
+                ->get();
+
+            $konten = $this->get_data($list);
+
+            return response()->json([
+                'success' => true,
+                'konten' => $konten,
+                'Status' => 200
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'Status' => 500
+            ], 500);
+        }
+    }
+
+    public function get_revisi()
+    {
+        try {
+            $user = Auth::guard('api')->user();
+
+            $list = Konten::where('user_id', $user->id)->where('is_draft', 1)
+                ->has('revisi')->get();
+
+            $konten = $this->get_data($list);
+
+            return response()->json([
+                'success' => true,
+                'konten' => $konten,
+                'Status' => 200
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'Status' => 500
+            ], 500);
+        }
+
+    }
+
+    public function hide_post($id)
+    {
+        try {
+            $konten = Konten::where("id", $id)->first();
+            if ($konten->is_hidden == 1) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Konten sudah tersembunyi",
+                    'Status' => 403
+                ], 403);
+            } elseif ($konten->is_draft == 1) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Konten belum ter-post",
+                    'Status' => 403
+                ], 403);
+            } else {
+                $konten->is_hidden = 1;
+                $konten->save();
+                return response()->json([
+                    'success' => true,
+                    'message' => "Konten telah disembunyikan",
+                    'Status' => 200
+                ], 200);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'Status' => 500
+            ], 500);
+        }
+    }
+
+    public function unhide_post($id)
+    {
+        try {
+            $konten = Konten::where("id", $id)->first();
+            if ($konten->is_hidden == 0) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Konten belum disembunyikan",
+                    'Status' => 403
+                ], 403);
+            } elseif ($konten->is_draft == 1) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Konten belum ter-post",
+                    'Status' => 403
+                ], 403);
+            } else {
+                $konten->is_hidden = 0;
+                $konten->save();
+                return response()->json([
+                    'success' => true,
+                    'message' => "Konten telah dimunculkan",
+                    'Status' => 200
+                ], 200);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'Status' => 500
+            ], 500);
+        }
+    }
+
+    public function delete($id)
+    {
+        try {
+            $konten = Konten::where("id", $id)->first();
+            if ($konten->tipe == "Artikel") {
+                $var = Artikel::where('id', '=', $id)->first();
+                if ($var->foto != 'default.png') {
+                    $path = 'img/foto/' . $var->foto;
+                    File::delete($path);
+                }
+            } elseif ($konten->tipe == "Video") {
+                $var = VideoAudio::where('id', '=', $id)->first();
+                if ($var->video_audio != 'default.png') {
+                    $path = 'file/video_audio/' . $var->video_audio;
+                    File::delete($path);
+                }
+            } elseif ($konten->tipe == "EDokumen") {
+                $var = Artikel::where('id', '=', $id)->first();
+                if ($var->file != 'default.png') {
+                    $path = 'file/file/' . $var->file;
+                    File::delete($path);
+                }
+            }
+            if (Bookmark::where('konten_id', $id)->exists()) {
+                $bookmark = Bookmark::where('konten_id', $id)->get();
+                foreach ($bookmark as $b) {
+                    $b->delete();
+                }
+            }
+            if (Riwayat::where('konten_id', $id)->exists()) {
+                $riwayat = Riwayat::where('konten_id', $id)->get();
+                foreach ($riwayat as $r) {
+                    $r->delete();
+                }
+            }
+
+            $var->delete();
+            $konten->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => "Konten terhapus",
+                'Status' => 200
+            ], 200);
+
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

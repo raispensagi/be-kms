@@ -56,10 +56,14 @@ class EDokumenController extends Controller
                         'file' => 'default.png',
                     ]);
 
-                    $file = $this->upload_file($request, 'file', 'EDokumen', $edok->id);
-                    if ($file != NULL) {
-                        $edok->file = $file;
-                        $edok->save();
+                    if ($request->file('file') != null) {
+                        $file = $this->upload_file($request, 'file', 'EDokumen', $edok->id);
+                        if ($file != NULL) {
+                            $edok->file = $file;
+                            $edok->save();
+                        }
+                    } else {
+                        $edok->file = $request->file;
                     }
 
                     $konten = Konten::create([
@@ -70,7 +74,7 @@ class EDokumenController extends Controller
                         'tipe' => 'EDokumen',
                         'id_tipe' => $edok->id,
                         'is_draft' => 1,
-                        'id_penulis' => $user->id,
+                        'user_id' => $user->id,
                     ]);
 
                     return response()->json([
@@ -122,10 +126,14 @@ class EDokumenController extends Controller
                         'file' => 'default.png',
                     ]);
 
-                    $file = $this->upload_file($request, 'file', 'EDokumen', $edok->id);
-                    if ($file != NULL) {
-                        $edok->file = $file;
-                        $edok->save();
+                    if ($request->file('file') != null) {
+                        $file = $this->upload_file($request, 'file', 'EDokumen', $edok->id);
+                        if ($file != NULL) {
+                            $edok->file = $file;
+                            $edok->save();
+                        }
+                    } else {
+                        $edok->file = $request->file;
                     }
 
                     $konten = Konten::create([
@@ -136,7 +144,149 @@ class EDokumenController extends Controller
                         'tipe' => 'EDokumen',
                         'id_tipe' => $edok->id,
                         'is_draft' => 0,
-                        'id_penulis' => $user->id,
+                        'is_valid' => 1,
+                        'user_id' => $user->id,
+                    ]);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'E-Dokumen tersimpan',
+                        'judul' => $request->judul,
+                        'kategori' => $request->kategori,
+                        'sub_kategori' => $request->sub_kategori,
+                        'Status' => 201
+                    ], 201);
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Anda tidak bisa membuat konten',
+                        'Status' => 500
+                    ], 500);
+                }
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'Status' => 500
+            ], 500);
+        }
+    }
+
+    /** Apabila ada aplikasi WEB, bedanya untuk web harus divalidasi terlebih dahulu */
+    public function draft_web(Request $request)
+    {
+        try {
+            if (Konten::where('judul', '=', $request->judul)->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Judul sudah ada',
+                    'Status' => 500
+                ], 500);
+            } else {
+                // checking user privilage
+                $user = Auth::guard('api')->user();
+
+                if ($user->peran == 'pakar_sawit' or $user->peran == 'validator') {
+                    $edok = EDokumen::create([
+                        'penulis' => $request->penulis,
+                        'tahun' => $request->tahun,
+                        'penerbit' => $request->penerbit,
+                        'halaman' => $request->halaman,
+                        'bahasa' => $request->bahasa,
+                        'deskripsi' => $request->deskripsi,
+                        'file' => 'default.png',
+                    ]);
+
+                    if ($request->file('file') != null) {
+                        $file = $this->upload_file($request, 'file', 'EDokumen', $edok->id);
+                        if ($file != NULL) {
+                            $edok->file = $file;
+                            $edok->save();
+                        }
+                    } else {
+                        $edok->file = $request->file;
+                    }
+
+                    $konten = Konten::create([
+                        'judul' => $request->judul,
+                        'tanggal' => Carbon::now()->format('d F Y H:i:s'),
+                        'kategori' => $request->kategori,
+                        'sub_kategori' => $request->sub_kategori,
+                        'tipe' => 'EDokumen',
+                        'id_tipe' => $edok->id,
+                        'is_draft' => 1,
+                        'user_id' => $user->id,
+                    ]);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'E-Dokumen tersimpan',
+                        'judul' => $request->judul,
+                        'kategori' => $request->kategori,
+                        'sub_kategori' => $request->sub_kategori,
+                        'Status' => 201
+                    ], 201);
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Anda tidak bisa membuat konten',
+                        'Status' => 500
+                    ], 500);
+                }
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'Status' => 500
+            ], 500);
+        }
+    }
+
+    public function post_web(Request $request)
+    {
+        try {
+            if (Konten::where('judul', '=', $request->judul)->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Judul sudah ada',
+                    'Status' => 500
+                ], 500);
+            } else {
+                // checking user privilage
+                $user = Auth::guard('api')->user();
+
+                if ($user->peran == 'pakar_sawit' or $user->peran == 'validator') {
+                    $edok = EDokumen::create([
+                        'penulis' => $request->penulis,
+                        'tahun' => $request->tahun,
+                        'penerbit' => $request->penerbit,
+                        'halaman' => $request->halaman,
+                        'bahasa' => $request->bahasa,
+                        'deskripsi' => $request->deskripsi,
+                        'file' => 'default.png',
+                    ]);
+
+                    if ($request->file('file') != null) {
+                        $file = $this->upload_file($request, 'file', 'EDokumen', $edok->id);
+                        if ($file != NULL) {
+                            $edok->file = $file;
+                            $edok->save();
+                        }
+                    } else {
+                        $edok->file = $request->file;
+                    }
+
+                    $konten = Konten::create([
+                        'judul' => $request->judul,
+                        'tanggal' => Carbon::now()->format('d F Y H:i:s'),
+                        'kategori' => $request->kategori,
+                        'sub_kategori' => $request->sub_kategori,
+                        'tipe' => 'EDokumen',
+                        'id_tipe' => $edok->id,
+                        'is_draft' => 0,
+                        'user_id' => $user->id,
                     ]);
 
                     return response()->json([

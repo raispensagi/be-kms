@@ -11,14 +11,22 @@ class Konten extends Model
 
     protected $fillable = [
         'kategori', 'sub_kategori', 'tipe', 'id_tipe', 'judul', 'tanggal', 'is_draft',
-        'is_valid', 'is_hidden', 'id_penulis',
+        'is_valid', 'is_hidden', 'user_id'
     ];
 
-    public function penulis(){
-        return $this->belongsTo('App\Penulis');
+    public function user(){
+        return $this->belongsTo('App\User');
     }
 
     public function bookmark(){
         return $this->belongsTo('App\Bookmark');
+    }
+
+    public function riwayat(){
+        return $this->belongsTo('App\Riwayat');
+    }
+
+    public function revisi(){
+        return $this->hasMany('App\Revisi');
     }
 }

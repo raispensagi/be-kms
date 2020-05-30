@@ -23,7 +23,7 @@ class LogInCheck
                 'success' => false,
                 'message' => 'Anda belum Log In, silahkan Log In terlebih dahulu!',
                 'Status' => 401
-            ], 200);
+            ], 401);
         }
     }
 }
