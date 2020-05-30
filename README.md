@@ -173,7 +173,7 @@ GET::   http://localhost:8000/api/pakar/post/my         (Get post konten punya s
 GET::   http://localhost:8000/api/pakar/revisi/my       (Get revisi konten punya sendiri)
 
 ! Notifikasi
-POST:: http://localhost:8000/api/pakar/notifikasi/add/{id}          (Menambah notifikasi)
+POST:: http://localhost:8000/api/pakar/notifikasi/add          (Menambah notifikasi)
 + Request
 - headline
 - isi
@@ -266,7 +266,7 @@ POST::  http://localhost:8000/api/validator/konten/revisi/{id}          (Revisi 
 + komentar
 
 ! Notifikasi
-POST:: http://localhost:8000/api/validator/notifikasi/add/{id}          (Menambah notifikasi)
+POST:: http://localhost:8000/api/validator/notifikasi/add         (Menambah notifikasi)
 + Request
 - headline
 - isi
@@ -301,7 +301,7 @@ POST::  http://localhost:8000/api/admin/konten/unhide/{id}        (Memunculkan k
 DEL::   http://localhost:8000/api/admin/konten/delete/{id}        (Menghapus konten yg berdasarkan id)
 
 ! Notifikasi
-POST:: http://localhost:8000/api/admin/notifikasi/add/{id}          (Menambah notifikasi)
+POST:: http://localhost:8000/api/admin/notifikasi/add          (Menambah notifikasi)
 + Request
 - headline
 - isi
