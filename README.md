@@ -95,8 +95,6 @@ POST::  http://localhost:8000/api/petani/bookmark/add/{id}      (Tambah bookmark
 DEL::   http://localhost:8000/api/petani/bookmark/delete/{id}   (Hapus bookmark, id adalah id dari konten)
 GET::   http://localhost:8000/api/petani/riwayat                (Show riwayat)
 
-! Notifikasi
-GET::   http://localhost:8000/api/petani/notifikasi                (Show riwayat)
 ```
 
 #### Pakar Sawit
