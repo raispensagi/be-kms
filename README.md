@@ -302,6 +302,8 @@ DEL::   http://localhost:8000/api/admin/konten/delete/{id}        (Menghapus kon
 
 ! Notifikasi
 POST:: http://localhost:8000/api/admin/notifikasi/add          (Menambah notifikasi)
+GET:: http://localhost:8000/api/admin/notifikasi/all           (Menampilkan semua notifikasi)
+DEL:: http://localhost:8000/api/admin/notifikasi/delete/{id}   (Menghapus notifikasi berdasarkan id)
 + Request
 - headline
 - isi
@@ -320,7 +322,8 @@ GET::   http://localhost:8000/api/profil/show/{id}                  (Show profil
 
 ! Notifikasi
 GET::   http://localhost:8000/api/notifikasi/show/{id}              (Show notifikasi berdasar id)
-GET::   http://localhost:8000/api/notifikasi/all                    (Get all notifikasi)
+GET::   http://localhost:8000/api/notifikasi/my                     (Get personal notifikasi)
+DEL::   http://localhost:8000/api/notifikasi/my/delete/{id}         (delete personal notifikasi berdasarkan id, id adalah id notifikasi)
 
 !Konten
 POST::   http://localhost:8000/api/konten/pencarian                 (Search biasa)
