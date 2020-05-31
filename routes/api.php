@@ -38,6 +38,8 @@ Route::group(['middleware' => ['cors']], function () {
             Route::delete('user/delete/{id}', 'API\UserController@delete');
 
             Route::post('notifikasi/add', 'API\NotifikasiController@add');
+            Route::get('notifikasi/all', 'API\NotifikasiController@get_all');
+            Route::delete('notifikasi/delete/{id}', 'API\NotifikasiController@delete');
 
             Route::post('konten/hide/{id}', 'API\Konten\MainController@hide_post');
             Route::post('konten/unhide/{id}', 'API\Konten\MainController@unhide_post');
@@ -146,8 +148,9 @@ Route::group(['middleware' => ['cors']], function () {
         Route::get('profil/show/{id}', 'API\UserController@show_profil');
         Route::post('logout', 'API\LogoutController@logout');
 
+        Route::get('notifikasi/my', 'API\NotifikasiController@get_personal');
         Route::get('notifikasi/show/{id}', 'API\NotifikasiController@show');
-        Route::get('notifikasi/all', 'API\NotifikasiController@get_all');
+        Route::delete('notifikasi/my/delete/{id}', 'API\NotifikasiController@delete_personal');
 
         Route::group(['prefix' => 'konten'], function () {
             Route::post('pencarian/kategori', 'API\Konten\MainController@search_kategori');
@@ -162,7 +165,7 @@ Route::group(['middleware' => ['cors']], function () {
         });
     });
 
-    Route::delete('notifikasi/delete/{id}', 'API\NotifikasiController@delete');
     Route::post('test', 'API\TestingController@check_request');
+    Route::post('assign', 'API\NotifikasiController@assign');
 });
 

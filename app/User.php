@@ -48,4 +48,8 @@ class User extends Authenticatable implements JWTSubject
     public function revisi(){
         return $this->hasMany('App\Revisi');
     }
+
+    public function notifikasi(){
+        return $this->hasMany('App\Notifikasi');
+    }
 }
