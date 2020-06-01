@@ -120,14 +120,14 @@ POST::  http://localhost:8000/api/pakar/artikel/draft           (Draft Artikel)
 + foto
 POST::  http://localhost:8000/api/pakar/artikel/post            (Post Artikel)
 - Sama seperti draft
-POST::  http://localhost:8000/api/pakar/video_audio/draft       (Draft Video/Audio)
+POST::  http://localhost:8000/api/pakar/video/draft       (Draft Video/Audio)
 - Request
 + judul
 + kategori
 + sub_kategori
 + isi
-+ video_audio
-POST::  http://localhost:8000/api/pakar/video_audio/post        (Post Video/Audio)
++ video
+POST::  http://localhost:8000/api/pakar/video/post        (Post Video/Audio)
 - Sama seperti draft
 POST::  http://localhost:8000/api/pakar/edokumen/draft          (Draft E-Dokumen)
 - Request
@@ -156,7 +156,7 @@ POST::  http://localhost:8000/api/pakar/draft/edit/{id}         (Edit draft, ter
 + kategori
 + sub_kategori
 + isi
-+ video_audio
++ video
 - if EDokumen
 + judul
 + kategori
@@ -202,14 +202,14 @@ POST::  http://localhost:8000/api/validator/artikel/draft       (Draft Artikel)
 + foto
 POST::  http://localhost:8000/api/validator/artikel/post        (Post Artikel)
 - Sama seperti draft
-POST::  http://localhost:8000/api/validator/video_audio/draft   (Draft Video/Audio)
+POST::  http://localhost:8000/api/validator/video/draft   (Draft Video/Audio)
 - Request
 + judul
 + kategori
 + sub_kategori
 + isi
-+ video_audio
-POST::  http://localhost:8000/api/validator/video_audio/post        (Post Video/Audio)
++ video
+POST::  http://localhost:8000/api/validator/video/post        (Post Video/Audio)
 - Sama seperti draft
 POST::  http://localhost:8000/api/validator/edokumen/draft          (Draft E-Dokumen)
 - Request
@@ -238,7 +238,7 @@ POST::  http://localhost:8000/api/validator/draft/edit/{id}         (Edit draft,
 + kategori
 + sub_kategori
 + isi
-+ video_audio
++ video
 - if EDokumen
 + judul
 + kategori
