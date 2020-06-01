@@ -331,11 +331,12 @@ POST::   http://localhost:8000/api/konten/pencarian                 (Search bias
 + keyword
 POST::   http://localhost:8000/api/konten/pencarian/kategori        (Search kategori)
 - Request
-+ keyword
++ kategori
++ sub_kategori
 GET::   http://localhost:8000/api/konten/penulis/{id}               (Show konten dari penulis, id adalah id dari penulis)
 GET::   http://localhost:8000/api/konten/post                       (Show all konten posted)
 GET::   http://localhost:8000/api/konten/artikel                    (Show all artikel posted)
-GET::   http://localhost:8000/api/konten/video_audio                (Show all video audio posted)
+GET::   http://localhost:8000/api/konten/video                      (Show all video audio posted)
 GET::   http://localhost:8000/api/konten/edokumen                   (Show all edokumen posted)
 GET::   http://localhost:8000/api/konten/show/{id}                  (Show isi konten)
 ```
