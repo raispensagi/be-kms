@@ -1,4 +1,4 @@
-<p align="center"><img src="https://thumbs.gfycat.com/CheerfulDazzlingChinchilla-size_restricted.gif" height=250px></p>
+<p align="center"><img src="https://img.pngio.com/natural-habitats-turns-palm-oil-production-on-its-head-new-hope-palm-oil-png-1540_800.png" height=250px></p>
 
 
 ## Back-End KMS Kelapa Sawit
@@ -77,7 +77,12 @@ php artisan jwt:secret
 php artisan serve
 ```
 
-## API List (Untuk sementara ini)
+## Dokumentasi
+
+Dokumentasi End Point atau API dapat dilihat di :
+https://documenter.getpostman.com/view/9321632/SzzhddjV?version=latest
+
+## API Lama
 
 #### Petani
 ```diff
