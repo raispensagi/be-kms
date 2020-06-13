@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
 
 class MainController extends Controller
 {
@@ -259,6 +260,7 @@ class MainController extends Controller
     public function get_konten_penulis($id)
     {
         try {
+
             $list = Konten::where('user_id', $id)->where('is_draft', '=', 0)
                 ->where('is_valid', '=', 1)->where('is_hidden', '=', 0)->get();
 
@@ -350,23 +352,15 @@ class MainController extends Controller
     public function get_all_post()
     {
         try {
-//            dd("ayam");
             $list = Konten::where('is_draft', 0)
-                ->where('is_valid', 1)->where('is_hidden', 0)
-                ->get();
-//            dd($list);
+                ->where('is_valid', 1)->where('is_hidden', 0)->get();
             $konten = $this->get_data($list);
-
             return response()->json([
-                'success' => true,
-                'konten' => $konten,
-                'Status' => 200
+                'success' => true,  'konten' => $konten, 'Status' => 200
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-                'Status' => 500
+                'success' => false,  'message' => $e->getMessage(), 'Status' => 500
             ], 500);
         }
     }
@@ -374,6 +368,13 @@ class MainController extends Controller
     public function show($id)
     {
         try {
+            if (Konten::where('id', $id)->count() == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Konten tidak ada',
+                    'Status' => 404
+                ], 404);
+            }
             $var = Konten::where('id', $id)->first();
             $user = Auth::guard('api')->user();
             if ($user->peran == 'petani' or $user->peran == 'pakar_sawit') {
@@ -412,6 +413,16 @@ class MainController extends Controller
     public function search_kategori(Request $request)
     {
         try {
+            $validator = Validator::make($request->all(), [
+                'kategori' => 'required|string',
+            ]);
+            if ($validator->fails()){
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->messages(),
+                    'Status' => 400
+                ], 400);
+            }
             $list = Konten::where('kategori', '=', $request->kategori)
                 ->where('sub_kategori', '=', $request->sub_kategori)
                 ->where('is_draft', '=', 0)->where('is_valid', '=', 1)
@@ -436,6 +447,16 @@ class MainController extends Controller
     public function search(Request $request)
     {
         try {
+            $validator = Validator::make($request->all(), [
+                'keyword' => 'required',
+            ]);
+            if ($validator->fails()){
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->messages(),
+                    'Status' => 400
+                ], 400);
+            }
             $keyword = $request->keyword;
 
             $list = Konten::where(function ($query) use ($keyword) {
@@ -465,6 +486,13 @@ class MainController extends Controller
     {
         try {
             $user = Auth::guard('api')->user();
+            if (Konten::where('id', $id)->count() == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Konten tidak ada',
+                    'Status' => 404
+                ], 404);
+            }
             $konten = Konten::where('id', '=', $id)->first();
             if ($user->id == $konten->user_id) {
                 if ($konten->is_draft == 0) {
@@ -479,8 +507,8 @@ class MainController extends Controller
                     return response()->json([
                         'success' => false,
                         'message' => 'Judul sudah ada',
-                        'Status' => 500
-                    ], 500);
+                        'Status' => 409
+                    ], 409);
                 }
 
                 if ($request->judul != null) {
@@ -503,14 +531,14 @@ class MainController extends Controller
                     'judul' => $konten->judul,
                     'kategori' => $konten->kategori,
                     'sub_kategori' => $konten->sub_kategori,
-                    'Status' => 201
-                ], 201);
+                    'Status' => 200
+                ], 200);
             } else {
                 return response()->json([
                     'success' => false,
                     'message' => 'Maaf, Anda tidak bisa mengubah Konten orang lain!',
-                    'Status' => 500
-                ], 500);
+                    'Status' => 403
+                ], 403);
             }
         } catch (\Exception $e) {
             return response()->json([
@@ -525,6 +553,13 @@ class MainController extends Controller
     {
         try {
             $user = Auth::guard('api')->user();
+            if (Konten::where('id', $id)->count() == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Konten tidak ada',
+                    'Status' => 404
+                ], 404);
+            }
             $konten = Konten::where('id', '=', $id)->first();
             if ($user->id == $konten->user_id) {
                 $konten->is_draft = 0;
@@ -536,14 +571,14 @@ class MainController extends Controller
                     'judul' => $konten->judul,
                     'kategori' => $konten->kategori,
                     'sub_kategori' => $konten->sub_kategori,
-                    'Status' => 201
-                ], 201);
+                    'Status' => 200
+                ], 200);
             } else {
                 return response()->json([
                     'success' => false,
                     'message' => 'Maaf, Anda tidak bisa mengubah Konten orang lain!',
-                    'Status' => 500
-                ], 500);
+                    'Status' => 403
+                ], 403);
             }
         } catch (\Exception $e) {
             return response()->json([
@@ -582,8 +617,7 @@ class MainController extends Controller
     {
         try {
             $id = Auth::guard('api')->user()->id;
-            $list = Konten::where('is_draft', '=', 0)
-                ->where('is_valid', '=', 0)->where('is_hidden', '=', 0)
+            $list = Konten::where('is_draft', '=', 0)->where('is_hidden', '=', 0)
                 ->get();
 
             $konten = $this->get_data($list);
@@ -630,6 +664,13 @@ class MainController extends Controller
     public function hide_post($id)
     {
         try {
+            if (Konten::where('id', $id)->count() == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Konten tidak ada',
+                    'Status' => 404
+                ], 404);
+            }
             $konten = Konten::where("id", $id)->first();
             if ($konten->is_hidden == 1) {
                 return response()->json([
@@ -664,6 +705,13 @@ class MainController extends Controller
     public function unhide_post($id)
     {
         try {
+            if (Konten::where('id', $id)->count() == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Konten tidak ada',
+                    'Status' => 404
+                ], 404);
+            }
             $konten = Konten::where("id", $id)->first();
             if ($konten->is_hidden == 0) {
                 return response()->json([
@@ -698,6 +746,13 @@ class MainController extends Controller
     public function delete($id)
     {
         try {
+            if (Konten::where('id', $id)->count() == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Konten tidak ada',
+                    'Status' => 404
+                ], 404);
+            }
             $konten = Konten::where("id", $id)->first();
             if ($konten->tipe == "Artikel") {
                 $var = Artikel::where('id', '=', $id)->first();

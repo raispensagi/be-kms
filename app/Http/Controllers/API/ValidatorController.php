@@ -12,6 +12,7 @@ use App\VideoAudio;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ValidatorController extends Controller
 {
@@ -122,14 +123,21 @@ class ValidatorController extends Controller
 
     public function validasi($id) {
         try {
+            if (Konten::where('id', $id)->count() == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Konten tidak ada',
+                    'Status' => 404
+                ], 404);
+            }
             $user = Auth::guard('api')->user();
             $konten = Konten::where("id", $id)->first();
             if ($konten->user_id == $user->id) {
                 return response()->json([
                     'success' => true,
                     'message' => "Anda tidak bisa memvalidasi konten Anda sendiri",
-                    'Status' => 403
-                ], 403);
+                    'Status' => 401
+                ], 401);
             }
             if ($konten->is_valid == 0) {
                 $konten->is_valid = 1;
@@ -138,15 +146,16 @@ class ValidatorController extends Controller
 //                $konten = $this->get_data($konten);
                 return response()->json([
                     'success' => true,
-                    'konten' => $konten,
+                    'message' => 'Validasi berhasil',
+                    'judul' => $konten->judul,
                     'Status' => 200
                 ], 200);
             } else {
                 return response()->json([
                     'success' => false,
                     'message' => 'Konten sudah valid',
-                    'Status' => 500
-                ], 500);
+                    'Status' => 401
+                ], 401);
             }
 
         } catch (\Exception $e) {
@@ -160,27 +169,44 @@ class ValidatorController extends Controller
 
     public function revisi(Request $request, $id) {
         try {
+            $validator = Validator::make($request->all(), [
+                'komentar' => 'required',
+            ]);
+            if ($validator->fails()){
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->messages(),
+                    'Status' => 400
+                ], 400);
+            }
             $user = Auth::guard('api')->user();
+            if (Konten::where('id', $id)->count() == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Konten tidak ada',
+                    'Status' => 404
+                ], 404);
+            }
             $konten = Konten::where("id", $id)->first();
             if ($konten->user_id == $user->id) {
                 return response()->json([
                     'success' => true,
                     'message' => "Anda tidak bisa memvalidasi konten Anda sendiri",
-                    'Status' => 403
-                ], 403);
+                    'Status' => 401
+                ], 401);
             }
             if ($konten->is_valid == 1) {
                 return response()->json([
                     'success' => true,
                     'message' => "Konten sudah Valid",
-                    'Status' => 403
-                ], 403);
+                    'Status' => 401
+                ], 401);
             } elseif ($konten->is_draft == 1) {
                 return response()->json([
                     'success' => true,
                     'message' => "Konten masih dalam draft",
-                    'Status' => 403
-                ], 403);
+                    'Status' => 401
+                ], 401);
             } else {
                 $konten->is_draft = 1;
                 $konten->save();
@@ -195,6 +221,7 @@ class ValidatorController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => "Konten telah direvisi",
+                    'judul' => $konten->judul,
                     'Status' => 200
                 ], 200);
             }

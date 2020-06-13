@@ -8,16 +8,30 @@ use \File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
-    private function check_null($var){
-
+    private function check($var){
+        $validator = Validator::make($var->all(), [
+            'nama' => 'required|string',
+            'email' => 'required|email',
+            'password' => 'required|string'
+        ]);
+        return $validator;
     }
 
     public function admin(Request $request)
     {
         try {
+            $validator = $this->check($request);
+            if ($validator->fails()){
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->messages(),
+                    'Status' => 400
+                ], 400);
+            }
             $nama = $request->nama;
             $email = $request->email;
             $password = Hash::make($request->password);
@@ -65,6 +79,14 @@ class RegisterController extends Controller
     public function super_admin(Request $request)
     {
         try {
+            $validator = $this->check($request);
+            if ($validator->fails()){
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->messages(),
+                    'Status' => 400
+                ], 400);
+            }
             $nama = $request->nama;
             $email = $request->email;
             $password = Hash::make($request->password);
@@ -112,6 +134,14 @@ class RegisterController extends Controller
     public function validator(Request $request)
     {
         try {
+            $validator = $this->check($request);
+            if ($validator->fails()){
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->messages(),
+                    'Status' => 400
+                ], 400);
+            }
             $nama = $request->nama;
             $email = $request->email;
             $password = Hash::make($request->password);
@@ -159,6 +189,14 @@ class RegisterController extends Controller
     public function pakar_sawit(Request $request)
     {
         try {
+            $validator = $this->check($request);
+            if ($validator->fails()){
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->messages(),
+                    'Status' => 400
+                ], 400);
+            }
             $nama = $request->nama;
             $email = $request->email;
             $password = Hash::make($request->password);
@@ -206,6 +244,14 @@ class RegisterController extends Controller
     public function petani(Request $request)
     {
         try {
+            $validator = $this->check($request);
+            if ($validator->fails()){
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->messages(),
+                    'Status' => 400
+                ], 400);
+            }
             $nama = $request->nama;
             $email = $request->email;
             $password = Hash::make($request->password);

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -35,6 +36,13 @@ class UserController extends Controller
     public function show_profil($id)
     {
         try {
+            if (User::where('id', $id)->count() == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pengguna tidak ada',
+                    'Status' => 404
+                ], 404);
+            }
             $user = User::where('id', $id)->first();
 
             return response()->json([
@@ -78,8 +86,10 @@ class UserController extends Controller
     {
         try {
             $user = Auth::guard('api')->user();
+//            dd(' '. $request->nama. ' ' . $user->nama);
             if ($request->nama != null) {
                 $user->nama = $request->nama;
+//                dd('tr');
             }
             if ($request->email != null) {
                 $user->email = $request->email;
@@ -108,6 +118,13 @@ class UserController extends Controller
     public function update_profil_admin($id, Request $request)
     {
         try {
+            if (User::where('id', $id)->count() == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pengguna tidak ada',
+                    'Status' => 404
+                ], 404);
+            }
             $user = User::where('id', $id)->first();
             if ($request->nama != null) {
                 $user->nama = $request->nama;
@@ -139,6 +156,13 @@ class UserController extends Controller
     public function delete($id)
     {
         try {
+            if (User::where('id', $id)->count() == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pengguna tidak ada',
+                    'Status' => 404
+                ], 404);
+            }
             $user = User::where('id', $id)->first();
             $user->delete();
 

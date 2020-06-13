@@ -84,13 +84,19 @@ class BookmarkController extends Controller
     {
         try {
             $user = Auth::guard('api')->user();
-
+            if (Konten::where('id', $id)->count() == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Konten tidak ada',
+                    'Status' => 404
+                ], 404);
+            }
             if (Bookmark::where('user_id', $user->id)->where('konten_id', $id)->exists()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Anda sudah mem-bookmark konten ini',
-                    'Status' => 403
-                ], 403);
+                    'Status' => 409
+                ], 409);
             } else {
                 $var = Bookmark::create([
                     'user_id' => $user->id,
@@ -103,8 +109,8 @@ class BookmarkController extends Controller
                     'success' => true,
                     'message' => 'Konten ter-Bookmark',
                     'judul' => $konten->judul,
-                    'Status' => 200
-                ], 200);
+                    'Status' => 201
+                ], 201);
             }
         } catch (\Exception $e) {
             return response()->json([
@@ -133,8 +139,8 @@ class BookmarkController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Bookmark tidak ada',
-                    'Status' => 403
-                ], 403);
+                    'Status' => 404
+                ], 404);
             }
 
 

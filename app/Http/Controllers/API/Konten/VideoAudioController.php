@@ -8,6 +8,7 @@ use App\VideoAudio;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class VideoAudioController extends Controller
 {
@@ -31,16 +32,34 @@ class VideoAudioController extends Controller
         return $file_name;
     }
 
+    private function check($var){
+        $validator = Validator::make($var->all(), [
+            'judul' => 'required',
+            'kategori' => 'required',
+            'isi' => 'required',
+            'video_audio' => 'required',
+        ]);
+        return $validator;
+    }
+
     /** Public Function */
     public function draft(Request $request)
     {
         try {
+            $validator = $this->check($request);
+            if ($validator->fails()){
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->messages(),
+                    'Status' => 400
+                ], 400);
+            }
             if (Konten::where('judul', '=', $request->judul)->exists()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Judul sudah ada',
-                    'Status' => 500
-                ], 500);
+                    'Status' => 409
+                ], 409);
             } else {
                 // checking user privilage
                 $user = Auth::guard('api')->user();
@@ -86,8 +105,8 @@ class VideoAudioController extends Controller
                     return response()->json([
                         'success' => false,
                         'message' => 'Anda tidak bisa membuat konten',
-                        'Status' => 500
-                    ], 500);
+                        'Status' => 403
+                    ], 403);
                 }
             }
         } catch (\Exception $e) {
@@ -102,12 +121,20 @@ class VideoAudioController extends Controller
     public function post(Request $request)
     {
         try {
+            $validator = $this->check($request);
+            if ($validator->fails()){
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->messages(),
+                    'Status' => 400
+                ], 400);
+            }
             if (Konten::where('judul', '=', $request->judul)->exists()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Judul sudah ada',
-                    'Status' => 500
-                ], 500);
+                    'Status' => 409
+                ], 409);
             } else {
                 // checking user privilage
                 $user = Auth::guard('api')->user();
@@ -153,8 +180,8 @@ class VideoAudioController extends Controller
                     return response()->json([
                         'success' => false,
                         'message' => 'Anda tidak bisa membuat konten',
-                        'Status' => 500
-                    ], 500);
+                        'Status' => 403
+                    ], 403);
                 }
             }
         } catch (\Exception $e) {
@@ -170,12 +197,20 @@ class VideoAudioController extends Controller
     public function draft_web(Request $request)
     {
         try {
+            $validator = $this->check($request);
+            if ($validator->fails()){
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->messages(),
+                    'Status' => 400
+                ], 400);
+            }
             if (Konten::where('judul', '=', $request->judul)->exists()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Judul sudah ada',
-                    'Status' => 500
-                ], 500);
+                    'Status' => 409
+                ], 409);
             } else {
                 // checking user privilage
                 $user = Auth::guard('api')->user();
@@ -220,8 +255,8 @@ class VideoAudioController extends Controller
                     return response()->json([
                         'success' => false,
                         'message' => 'Anda tidak bisa membuat konten',
-                        'Status' => 500
-                    ], 500);
+                        'Status' => 403
+                    ], 403);
                 }
             }
         } catch (\Exception $e) {
@@ -236,12 +271,20 @@ class VideoAudioController extends Controller
     public function post_web(Request $request)
     {
         try {
+            $validator = $this->check($request);
+            if ($validator->fails()){
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->messages(),
+                    'Status' => 400
+                ], 400);
+            }
             if (Konten::where('judul', '=', $request->judul)->exists()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Judul sudah ada',
-                    'Status' => 500
-                ], 500);
+                    'Status' => 409
+                ], 409);
             } else {
                 // checking user privilage
                 $user = Auth::guard('api')->user();
@@ -287,8 +330,8 @@ class VideoAudioController extends Controller
                     return response()->json([
                         'success' => false,
                         'message' => 'Anda tidak bisa membuat konten',
-                        'Status' => 500
-                    ], 500);
+                        'Status' => 403
+                    ], 403);
                 }
             }
         } catch (\Exception $e) {

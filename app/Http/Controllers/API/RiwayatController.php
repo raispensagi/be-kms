@@ -76,65 +76,6 @@ class RiwayatController extends Controller
         return $var;
     }
 
-    /** Public function */
-//    public function add($id)
-//    {
-//        try {
-//            $user = Auth::guard('api')->user();
-//
-//            if (Bookmark::where('user_id', $user->id)->where('konten_id', $id)->exists()) {
-//                return response()->json([
-//                    'success' => false,
-//                    'message' => 'Anda sudah mem-bookmark konten ini',
-//                    'Status' => 403
-//                ], 403);
-//            } else {
-//                $var = Bookmark::create([
-//                    'user_id' => $user->id,
-//                    'konten_id' => $id,
-//                ]);
-//
-//                $konten = Konten::where('id', $id)->first();
-//
-//                return response()->json([
-//                    'success' => true,
-//                    'message' => 'Konten ter-Bookmark',
-//                    'judul' => $konten->judul,
-//                    'Status' => 200
-//                ], 200);
-//            }
-//        } catch (\Exception $e) {
-//            return response()->json([
-//                'success' => false,
-//                'message' => $e->getMessage(),
-//                'Status' => 500
-//            ], 500);
-//        }
-//    }
-
-//    public function delete($id)
-//    {
-//        try {
-//            $user = Auth::guard('api')->user();
-//
-//            $var = Bookmark::where('id', $id)->first();
-//            $var->delete();
-//
-//            return response()->json([
-//                'success' => true,
-//                'message' => 'Bookmark terhapus',
-//                'Status' => 200
-//            ], 200);
-//
-//        } catch (\Exception $e) {
-//            return response()->json([
-//                'success' => false,
-//                'message' => $e->getMessage(),
-//                'Status' => 500
-//            ], 500);
-//        }
-//    }
-
     public function get_all()
     {
         try {

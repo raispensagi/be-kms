@@ -11,6 +11,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class NotifikasiController extends Controller
 {
@@ -18,6 +19,17 @@ class NotifikasiController extends Controller
     public function add(Request $request)
     {
         try {
+            $validator = Validator::make($request->all(), [
+                'isi' => 'required',
+                'headline' => 'required'
+            ]);
+            if ($validator->fails()){
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->messages(),
+                    'Status' => 400
+                ], 400);
+            }
             $user = Auth::guard('api')->user();
 
             $notifikasi = Notifikasi::create([
@@ -39,8 +51,8 @@ class NotifikasiController extends Controller
                 'message' => 'Notifikasi sudah dibuat',
                 'id' => $notifikasi->id,
                 'headline' => $request->headline,
-                'Status' => 200
-            ], 200);
+                'Status' => 201
+            ], 201);
 
         } catch (\Exception $e) {
             return response()->json([
@@ -54,18 +66,25 @@ class NotifikasiController extends Controller
     public function show($id)
     {
         try {
+            if (Notifikasi::where('id', $id)->count() == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Notifikasi tidak ada',
+                    'Status' => 404
+                ], 404);
+            }
             $notifikasi = Notifikasi::where('id', $id)->first();
             $user = User::where('id', $notifikasi->user_id)->first();
             $var = array([
                 'headline' => $notifikasi->headline,
                 'isi' => $notifikasi->isi,
                 'tanggal' => $notifikasi->tanggal,
-                ''
+                'penulis' => $user->nama
             ]);
 
             return response()->json([
                 'success' => true,
-                'notifikasi' => $notifikasi,
+                'notifikasi' => $var,
                 'Status' => 200
             ], 200);
 
@@ -82,10 +101,23 @@ class NotifikasiController extends Controller
     {
         try {
             $notifikasi = Notifikasi::get();
+            $var = array();
+            foreach ($notifikasi as $n) {
+                $temp = Notifikasi::where('id', $n->id)->first();
+                $user = User::where('id', $temp->user_id)->first();
+                $temp2 = array([
+                    'id' => $temp->id,
+                    'headline' => $temp->headline,
+                    'isi' => $temp->isi,
+                    'tanggal' => $temp->tanggal,
+                    'penulis' => $user->nama
+                ]);
+                array_push($var, $temp2);
+            }
 
             return response()->json([
                 'success' => true,
-                'notifikasi' => $notifikasi,
+                'notifikasi' => $var,
                 'Status' => 200
             ], 200);
 
@@ -106,7 +138,15 @@ class NotifikasiController extends Controller
             $var = array();
             foreach ($notifikasi as $n) {
                 $temp = Notifikasi::where('id', $n->notifikasi_id)->first();
-                array_push($var, $temp);
+                $user = User::where('id', $temp->user_id)->first();
+                $temp2 = array([
+                    'id' => $temp->id,
+                    'headline' => $temp->headline,
+                    'isi' => $temp->isi,
+                    'tanggal' => $temp->tanggal,
+                    'penulis' => $user->nama
+                ]);
+                array_push($var, $temp2);
             }
 
             return response()->json([
@@ -127,10 +167,17 @@ class NotifikasiController extends Controller
     public function delete($id)
     {
         try {
+            if (Notifikasi::where('id', $id)->count() == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Notifikasi tidak ada',
+                    'Status' => 404
+                ], 404);
+            }
             $notifikasi = Notifikasi::where('id', $id)->first();
             $notifikasi->delete();
 
-            $pivot = NotifikasiUser::where('notifikasi_id',$id)->get();
+            $pivot = NotifikasiUser::where('notifikasi_id', $id)->get();
             foreach ($pivot as $p) {
                 $p->delete();
             }
@@ -154,8 +201,14 @@ class NotifikasiController extends Controller
     {
         try {
             $user = Auth::guard('api')->user();
-
-            $pivot = NotifikasiUser::where('notifikasi_id',$id)->where('user_id',$user->id)->first();
+            if (NotifikasiUser::where('notifikasi_id', $id)->where('user_id', $user->id)->count() == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Konten tidak ada',
+                    'Status' => 404
+                ], 404);
+            }
+            $pivot = NotifikasiUser::where('notifikasi_id', $id)->where('user_id', $user->id)->first();
             $pivot->delete();
 
             return response()->json([
@@ -173,13 +226,14 @@ class NotifikasiController extends Controller
         }
     }
 
-    public function assign() {
+    public function assign()
+    {
         try {
             $notifikasi = Notifikasi::get();
             $user = User::get();
 
             foreach ($user as $u) {
-                foreach ($notifikasi as $n){
+                foreach ($notifikasi as $n) {
                     if (NotifikasiUser::where('user_id', $u->id)->where('notifikasi_id', $n->id)->exists()) {
                         continue;
                     } else {
@@ -194,6 +248,37 @@ class NotifikasiController extends Controller
             return response()->json([
                 'success' => true,
                 'pesan' => 'Assigned',
+                'Status' => 200
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'Status' => 500
+            ], 500);
+        }
+    }
+
+    public function delete_useless()
+    {
+        try {
+            $notifikasi = Notifikasi::get();
+            $ids = array();
+
+            foreach ($notifikasi as $n) {
+                array_push($ids, $n->id);
+            }
+//            dd($ids);
+            $pivot = NotifikasiUser::whereNotIn('notifikasi_id', $ids)->get();
+//            print($pivot);
+            foreach ($pivot as $p) {
+                $p->delete();
+            }
+
+            return response()->json([
+                'success' => true,
+                'pesan' => 'deleted',
                 'Status' => 200
             ], 200);
 
