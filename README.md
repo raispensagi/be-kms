@@ -23,27 +23,6 @@ Untuk menjalankan projek ini, dibutuhkan program berikut:
 ```
 composer update
 ```
-- Sebagai bagian dari otentikasi, buatlah file PHP dalam folder ```vendor/framework/src/Illuminate/Foundation/Auth```. File-file yang akan dibuat dinamakan ```Admin```, ```SuperAdmin```, ```Validator```, ```PakarSawit```, ```Petani```. Untuk isi dari file PHP tersebut, dapat mengikuti contoh ini:
-```
-<?php
-
-namespace Illuminate\Foundation\Auth;
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Foundation\Auth\Access\Authorizable;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-
-class Admin extends Model implements    //Admin adalah contoh dari classname, dapat diganti sesuai nama file seperti Petani
-    AuthenticatableContract,
-    AuthorizableContract,
-    CanResetPasswordContract
-{
-    use Authenticatable, Authorizable, CanResetPassword;
-}
-```
 - Aktifkan **XAMPP Control Panel** dan aktifkan **Apache** dan **MySQL**.
 - Pada database (defaultnya [localhost/phpmyadmin](http://localhost/phpmyadmin)), buat database baru bernama `kms_sawit`.
 - Edit isi dari `.env.example` dengan *text editor*. Ganti bagian `DB_` sesuai dengan database Anda dan simpan sebagai file baru bernama `.env`
