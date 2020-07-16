@@ -390,6 +390,8 @@ class MainController extends Controller
             $konten = array([
                 'id' => $id,
                 'tipe' => $var->tipe,
+                'kategori' => $var->kategori,
+                'sub_kategori' => $var->sub_kategori,
                 'judul' => $var->judul,
                 'tanggal' => $var->tanggal,
                 'konten' => $isi,
@@ -563,6 +565,7 @@ class MainController extends Controller
             $konten = Konten::where('id', '=', $id)->first();
             if ($user->id == $konten->user_id) {
                 $konten->is_draft = 0;
+                $konten->is_valid = 1;
                 $konten->save();
 
                 return response()->json([
@@ -595,7 +598,7 @@ class MainController extends Controller
             $id = Auth::guard('api')->user()->id;
             $list = Konten::where('is_draft', '=', 1)
                 ->where('is_valid', '=', 0)->where('is_hidden', '=', 0)
-                ->get();
+                ->where('user_id', $id)->get();
 
             $konten = $this->get_data($list);
 
@@ -618,7 +621,7 @@ class MainController extends Controller
         try {
             $id = Auth::guard('api')->user()->id;
             $list = Konten::where('is_draft', '=', 0)->where('is_hidden', '=', 0)
-                ->get();
+                ->where('user_id', $id)->get();
 
             $konten = $this->get_data($list);
 

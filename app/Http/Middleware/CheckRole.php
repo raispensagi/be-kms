@@ -30,8 +30,6 @@ class CheckRole
             }
         }
         $allowed = array_unique($allowed);
-
-//        dd(Auth::guard('api')->check());
         $user = Auth::guard('api')->user();
         if (Auth::guard('api')->check()) {
             if (in_array($user->peran, $allowed)) {
@@ -50,6 +48,5 @@ class CheckRole
                 'Status' => 401
             ], 401);
         }
-
     }
 }

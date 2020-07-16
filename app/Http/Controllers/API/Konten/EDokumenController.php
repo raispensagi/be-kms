@@ -69,24 +69,31 @@ class EDokumenController extends Controller
                 $user = Auth::guard('api')->user();
 
                 if ($user->peran == 'pakar_sawit' or $user->peran == 'validator') {
-                    $edok = EDokumen::create([
-                        'penulis' => $request->penulis,
-                        'tahun' => $request->tahun,
-                        'penerbit' => $request->penerbit,
-                        'halaman' => $request->halaman,
-                        'bahasa' => $request->bahasa,
-                        'deskripsi' => $request->deskripsi,
-                        'file' => 'default.png',
-                    ]);
-
                     if ($request->file('file') != null) {
+                        $edok = EDokumen::create([
+                            'penulis' => $request->penulis,
+                            'tahun' => $request->tahun,
+                            'penerbit' => $request->penerbit,
+                            'halaman' => $request->halaman,
+                            'bahasa' => $request->bahasa,
+                            'deskripsi' => $request->deskripsi,
+                            'file' => 'default.png',
+                        ]);
                         $file = $this->upload_file($request, 'file', 'EDokumen', $edok->id);
                         if ($file != NULL) {
                             $edok->file = $file;
                             $edok->save();
                         }
                     } else {
-                        $edok->file = $request->file;
+                        $edok = EDokumen::create([
+                            'penulis' => $request->penulis,
+                            'tahun' => $request->tahun,
+                            'penerbit' => $request->penerbit,
+                            'halaman' => $request->halaman,
+                            'bahasa' => $request->bahasa,
+                            'deskripsi' => $request->deskripsi,
+                            'file' => $request->file,
+                        ]);
                     }
 
                     $konten = Konten::create([
@@ -147,24 +154,31 @@ class EDokumenController extends Controller
                 $user = Auth::guard('api')->user();
 
                 if ($user->peran == 'pakar_sawit' or $user->peran == 'validator') {
-                    $edok = EDokumen::create([
-                        'penulis' => $request->penulis,
-                        'tahun' => $request->tahun,
-                        'penerbit' => $request->penerbit,
-                        'halaman' => $request->halaman,
-                        'bahasa' => $request->bahasa,
-                        'deskripsi' => $request->deskripsi,
-                        'file' => 'default.png',
-                    ]);
-
                     if ($request->file('file') != null) {
+                        $edok = EDokumen::create([
+                            'penulis' => $request->penulis,
+                            'tahun' => $request->tahun,
+                            'penerbit' => $request->penerbit,
+                            'halaman' => $request->halaman,
+                            'bahasa' => $request->bahasa,
+                            'deskripsi' => $request->deskripsi,
+                            'file' => 'default.png',
+                        ]);
                         $file = $this->upload_file($request, 'file', 'EDokumen', $edok->id);
                         if ($file != NULL) {
                             $edok->file = $file;
                             $edok->save();
                         }
                     } else {
-                        $edok->file = $request->file;
+                        $edok = EDokumen::create([
+                            'penulis' => $request->penulis,
+                            'tahun' => $request->tahun,
+                            'penerbit' => $request->penerbit,
+                            'halaman' => $request->halaman,
+                            'bahasa' => $request->bahasa,
+                            'deskripsi' => $request->deskripsi,
+                            'file' => $request->file,
+                        ]);
                     }
 
                     $konten = Konten::create([

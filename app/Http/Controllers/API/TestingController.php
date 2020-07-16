@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Artikel;
+use App\Bookmark;
+use App\EDokumen;
 use App\Http\Controllers\Controller;
 use App\Konten;
+use App\Notifikasi;
+use App\User;
+use App\VideoAudio;
 use Illuminate\Http\Request;
 
 class TestingController extends Controller
@@ -63,5 +69,26 @@ class TestingController extends Controller
                 'Status' => 500
             ], 500);
         }
+    }
+
+    public function rekap_data(){
+        $n_konten = Konten::count();
+        $n_bookmark = Bookmark::count();
+        $n_user = User::count();
+        $n_notif = Notifikasi::count();
+        $n_artikel = Artikel::count();
+        $n_video = VideoAudio::count();
+        $n_edok = EDokumen::count();
+
+        return response()->json([
+            'message' => 'Rekap Data',
+            'jumlah konten' => $n_konten,
+            'jumlah artikel' => $n_artikel,
+            'jumlah video' => $n_video,
+            'jumlah edokumen' => $n_edok,
+            'jumlah user' => $n_user,
+            'jumlah bookmark' => $n_bookmark,
+            'jumlah notifikasi' => $n_notif,
+        ], 200);
     }
 }
