@@ -41,7 +41,10 @@ php artisan key:generate
 ```
 - Kemudian, migrasi database:
 ```
-php artisan migrate
+> Buka 'localhost/phpmyadmin' di Web Browser Anda
+> Buka database yang telah anda buat 'kms_sawit'
+> Pilih menu 'Import' dan upload file .sql bernama 'kms_sawit.sql' pada folder aplikasi 
+> Import file tersebut, dan database Anda siap dijalankan
 ```
 - Karena projek ini menggunakan otentikasi JWT Token, maka harus *publish* terlebih dahulu
 ```
